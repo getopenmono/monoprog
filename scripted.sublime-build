@@ -1,0 +1,21 @@
+{
+	"shell_cmd": "compile.sh",
+	"path": "${project_path}",
+	"working_dir": "${project_path}",
+	"file_regex": "^../([^\n:]+):([0-9]+):([0-9]+): (.*)$",
+	"variants": [
+		{
+			"name": "Run",
+			"shell_cmd": "acceptancetest.sh"
+		},
+		{
+			"name": "Unit test",
+			"file_regex": "^./../../([^\n:]+):([0-9]+):([0-9]+): (.*)$",
+			"shell_cmd": "unittest.sh"
+		},
+		{
+			"name": "Clean",
+			"shell_cmd": "clean.sh"
+		}
+	]
+}
