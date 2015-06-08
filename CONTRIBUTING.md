@@ -22,5 +22,5 @@ requests.
 
 ## Additional resources
 
- - [License](LICENSE.md).
+ - [License](LICENSE.txt).
  - [Clean Code(r)](http://en.wikipedia.org/wiki/Robert_Cecil_Martin).
