@@ -1,0 +1,3 @@
+build/*
+.qmake.stash
+*.sublime-workspace
