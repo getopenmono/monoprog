@@ -6,6 +6,7 @@ TARGET = monoprog
 CONFIG += console
 CONFIG += warn_on
 CONFIG += c++11
+CONFIG += resources
 CONFIG -= app_bundle
 
 TEMPLATE = app
@@ -18,11 +19,19 @@ SOURCES += src/ProgrammerBase.cpp
 SOURCES += src/CyacdProgrammer.cpp
 SOURCES += src/ElfProgrammer.cpp
 SOURCES += src/ElfReader.cpp
-SOURCES += hidapi/mac/hid.c
 SOURCES += cybootloaderutils/cybtldr_api.c
 SOURCES += cybootloaderutils/cybtldr_api2.c
 SOURCES += cybootloaderutils/cybtldr_command.c
 SOURCES += cybootloaderutils/cybtldr_parse.c
+
+macx {
+	SOURCES += hidapi/mac/hid.c
+	LIBS += -framework CoreFoundation
+} else:unix {
+	SOURCES += hidapi/linux/hid-libusb.c
+	INCLUDEPATH += /usr/include/libusb-1.0
+	LIBS += -lusb-1.0
+}
 
 INCLUDEPATH += cybootloaderutils
 INCLUDEPATH += hidapi/hidapi
@@ -48,4 +57,3 @@ HEADERS += src/CombinedMemory.h
 
 RESOURCES += resources.qrc
 
-LIBS += -framework CoreFoundation

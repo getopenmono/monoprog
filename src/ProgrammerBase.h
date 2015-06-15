@@ -4,6 +4,7 @@
 #include "cybtldr_api.h"
 #include "cybtldr_api2.h"
 #include <QFileInfo>
+#include <memory>
 struct IDeviceCommunicator;
 
 class ProgrammerBase : public IProgrammer
