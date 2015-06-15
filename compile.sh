@@ -1,5 +1,5 @@
 #!/bin/sh
 
-./setup.sh
-cd build
+./setup.sh && \
+cd build && \
 make
