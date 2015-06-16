@@ -33,6 +33,8 @@ enum DeviceState
 	MockConnected
 };
 
+} // namespace
+
 class Arguments
 {
 public:
@@ -179,8 +181,6 @@ QStringList Arguments::deviceState = QStringList()
 	<< "disconnected" // 0
 	<< "connected" // 1
 	;
-
-} // namespace
 
 Application::Application (QCoreApplication * qtApp_, std::ostream & out, std::ostream & error)
 : qtApp(qtApp_)

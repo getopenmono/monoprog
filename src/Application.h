@@ -13,7 +13,7 @@ enum StatusCode
 	UnknownError
 };
 
-namespace { class Arguments; }
+class Arguments;
 class QCoreApplication;
 class OutputCollector;
 class QString;
