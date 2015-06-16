@@ -4,10 +4,10 @@ This is a tool for transferring applications to a [Mono device](http://openmono.
 
 At the moments it works for
  - [X] OSX
- - [ ] Linux
+ - [X] Linux
  - [ ] Windows
 
-To build Mono Programmer, you need Qt.
+To build Mono Programmer, you need Qt and various libraries, see architecture-specific sections below.
 
 Then
 
@@ -25,14 +25,15 @@ To run acceptance tests, install [Aruba](https://github.com/cucumber/aruba) and
 
 ## OSX
 
- - [install Qt](https://www.qt.io/download-open-source/) and set your PATH to point to bin.
+ - [Install Qt](https://www.qt.io/download-open-source/) and set your PATH to point to the installed Qt bin directory, like adding `export PATH="~/Qt/5.4/clang_64/bin:$PATH"` to your ~/.bachrc
 
-## Debian-based Linux
+ - Optionally install Aruba: `$ gem install aruba`
 
- - Install Qt from http://www.qt.io/download-open-source, see http://www.bogotobogo.com/Qt/Qt5_Install_Ubuntu_14_64bit.php and set your PATH to point to installed bin directory, like
-	export PATH=~/Qt5.4.2/5.4/gcc_64/bin:$PATH
+## Debian/Ubuntu GNU/Linux
+
+ - Install Qt from http://www.qt.io/download-open-source, see http://www.bogotobogo.com/Qt/Qt5_Install_Ubuntu_14_64bit.php and set your PATH to point to installed bin directory, like adding `export PATH="~/Qt5.4.2/5.4/gcc_64/bin:$PATH"` to your ~/.bachrc
 
  - Install libusb-1.0-0-dev
 
- - Install Aruba: `$ sudo aptitude install ruby-aruba`
+ - Optionally install Aruba: `$ sudo aptitude install ruby-aruba`
 
