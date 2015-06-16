@@ -27,7 +27,8 @@ SOURCES += cybootloaderutils/cybtldr_parse.c
 macx {
 	SOURCES += hidapi/mac/hid.c
 	LIBS += -framework CoreFoundation
-} else:unix {
+}
+linux {
 	SOURCES += hidapi/linux/hid-libusb.c
 	INCLUDEPATH += /usr/include/libusb-1.0
 	LIBS += -lusb-1.0
