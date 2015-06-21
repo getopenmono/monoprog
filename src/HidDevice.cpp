@@ -1,6 +1,10 @@
 #include "HidDevice.h"
 #include "cybtldr_api.h"
-#include <unistd.h>
+#if defined(WIN32)
+#	include <windows.h>
+#else
+#	include <unistd.h>
+#endif
 
 #define OUTPUT(level) OUTPUTCOLLECTOR_LINE((output),level)
 #define PROGRESS(level) OUTPUTCOLLECTOR_PROGRESS((output),level)
@@ -93,7 +97,12 @@ void HidDevice::connectRealDev ()
 		}
 		PROGRESS(1);
 		// Poll in 100ms intervals.
-		usleep(100000);
+#		if defined(WIN32)
+			//SetLastError(0);
+			Sleep(100);
+#		else
+			usleep(100000);
+#		endif
 	}
 }
 

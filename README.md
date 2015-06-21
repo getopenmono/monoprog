@@ -37,3 +37,15 @@ To run acceptance tests, install [Aruba](https://github.com/cucumber/aruba) and
 
  - Optionally install Aruba: `$ sudo aptitude install ruby-aruba`
 
+## Windows
+
+Monoprog has been tested with Visual Studio Express 2010.  It might work in other configurations, please report back.
+
+- Install [Visual Studio C++ Express 2010]().
+
+- Install Install Qt for VS2010 from http://www.qt.io/download-open-source.
+
+ - Run
+    #qmake -spec win32-msvc2010 -tp vc -o build/unittests.vcxproj unittests.pro
+	qmake -spec win32-msvc2010 -tp vc unittests.pro
+	qmake -spec win32-msvc2010 -tp vc monoprog.pro

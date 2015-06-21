@@ -47,14 +47,13 @@ void ProgrammerBase::setOutput (OutputCollector * output)
 
 CyBtldr_CommunicationsData ProgrammerBase::getCybtldrCommPack () const
 {
-	return
-	{
-		openConnection,
-		closeConnection,
-		readData,
-		writeData,
-		psocDevice->getBufferSize()
-	};
+	static CyBtldr_CommunicationsData bundle;
+	bundle.OpenConnection = openConnection;
+	bundle.CloseConnection = closeConnection;
+	bundle.ReadData = readData;
+	bundle.WriteData = writeData;
+	bundle.MaxTransferSize = psocDevice->getBufferSize();
+	return bundle;
 }
 
 CyBtldr_ProgressUpdate * ProgrammerBase::getCybtldrProgressUpdate () const

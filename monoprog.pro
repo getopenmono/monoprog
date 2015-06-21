@@ -33,10 +33,21 @@ linux {
 	INCLUDEPATH += /usr/include/libusb-1.0
 	LIBS += -lusb-1.0
 }
+windows {
+	SOURCES += hidapi/windows/hid.c
 
-INCLUDEPATH += cybootloaderutils
-INCLUDEPATH += hidapi/hidapi
-INCLUDEPATH += elfio
+	Release:DESTDIR = build/release
+	Release:OBJECTS_DIR = build/release/.obj
+	Release:MOC_DIR = build/release/.moc
+	Release:RCC_DIR = build/release/.rcc
+	Release:UI_DIR = build/release/.ui
+	
+	Debug:DESTDIR = build/debug
+	Debug:OBJECTS_DIR = build/debug/.obj
+	Debug:MOC_DIR = build/debug/.moc
+	Debug:RCC_DIR = build/debug/.rcc
+	Debug:UI_DIR = build/debug/.ui
+}
 
 HEADERS += cybootloaderutils/cybtldr_api.h
 HEADERS += cybootloaderutils/cybtldr_api2.h
@@ -56,5 +67,8 @@ HEADERS += src/IMemorySection.h
 HEADERS += src/MemorySection.h
 HEADERS += src/CombinedMemory.h
 
-RESOURCES += resources.qrc
+INCLUDEPATH += cybootloaderutils
+INCLUDEPATH += hidapi/hidapi
+INCLUDEPATH += elfio
 
+RESOURCES += resources.qrc
