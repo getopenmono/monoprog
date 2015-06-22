@@ -49,3 +49,7 @@ Monoprog has been tested with Visual Studio Express 2010.  It might work in othe
     #qmake -spec win32-msvc2010 -tp vc -o build/unittests.vcxproj unittests.pro
 	qmake -spec win32-msvc2010 -tp vc unittests.pro
 	qmake -spec win32-msvc2010 -tp vc monoprog.pro
+
+ - Optionally install Ruby (2.0 for X86): http://dl.bintray.com/oneclick/rubyinstaller/rubyinstaller-2.0.0-p645.exe,
+   add bin to PATH.  Aruba: gem install aruba.  Also, http://adoxa.altervista.org/ansicon/
+

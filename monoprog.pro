@@ -35,6 +35,7 @@ linux {
 }
 windows {
 	SOURCES += hidapi/windows/hid.c
+	LIBS += setupapi.lib
 
 	Release:DESTDIR = build/release
 	Release:OBJECTS_DIR = build/release/.obj
