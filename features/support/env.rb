@@ -1,18 +1,17 @@
 require 'aruba/cucumber'
 
-# The application will be located in the 'build' directory.
-ENV['PATH'] = "#{File.expand_path(File.dirname(__FILE__) + '/../../build')}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
-
 module ArubaOverrides
   def detect_ruby(cmd)
     processor, platform, *rest = RUBY_PLATFORM.split("-")
-    #puts platform
-    if platform =~ /w32$/ && cmd =~ /^monoprog /
+    if platform =~ /w32$/ && cmd =~ /^monoprog/
+      ENV['PATH'] = "#{File.expand_path(File.dirname(__FILE__) + '/../../build/debug')}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
       *parts = cmd.split(" ")
       parts[0] += ".exe"
       wincmd = parts.join(" ")
-      "../../build/debug/#{wincmd}"
+      "#{wincmd}"
     else
+      # The application will be located in the 'build' directory.
+      ENV['PATH'] = "#{File.expand_path(File.dirname(__FILE__) + '/../../build')}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
       "#{cmd}"
     end
   end
