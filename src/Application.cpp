@@ -281,7 +281,8 @@ StatusCode Application::programDevice (QString const & appPath)
 		return ProgramTypeNotRecognised;
 	}
 	programmer->setOutput(output);
-	char const * path = appPath.toStdString().c_str();
+	std::string const filePath = appPath.toStdString();
+	char const * path = filePath.c_str();
 	OUTPUT(1) << "Programming Mono device with " << path;
 	switch (programmer->program())
 	{

@@ -81,7 +81,8 @@ ElfProgrammer::~ElfProgrammer ()
 
 ProgramStatus ElfProgrammer::program ()
 {
-	char const * path = file.filePath().toStdString().c_str();
+	std::string const stringPath = file.filePath().toStdString();
+	char const * path = stringPath.c_str();
 	OUTPUT(5) << "ElfProgrammer " << path;
 	if (! setUpElfReader()) return ProgrammerCorruptProgram;
 	setupProgramMemory();

@@ -14,7 +14,8 @@ CyacdProgrammer::CyacdProgrammer (QFileInfo & file, IDeviceCommunicator * device
 
 ProgramStatus CyacdProgrammer::program ()
 {
-	char const * path = file.filePath().toStdString().c_str();
+	std::string const filePath = file.filePath().toStdString();
+	char const * path = filePath.c_str();
 	OUTPUT(5) << "CyacdProgrammer " << path;
 	CyBtldr_CommunicationsData cyComms = getCybtldrCommPack();
 	CyBtldr_ProgressUpdate * updater = getCybtldrProgressUpdate();

@@ -173,7 +173,7 @@ private:
 		buffer[2] = rowNr >> 8;
 		buffer[3] = size & 0xFF;
 		buffer[4] = size >> 8;
-		for (size_t i = 0; i <= size; ++i) buffer[i+5] = dataReceived[i];
+		for (size_t i = 0; i < size; ++i) buffer[i+5] = dataReceived[i];
 		output.outputHex(6,buffer.data(),5,32);
 		output.outputHex(5,buffer.data()+5,size,32);
 		short unsigned sum = 0;
