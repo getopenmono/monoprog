@@ -25,7 +25,7 @@ private slots:
 		CONSTRUCTPACKET(buffer,packet);
 		// Assert
 		QCOMPARE(packet.getCommand(),CMD_GET_FLASH_SIZE);
-		size_t size = packet.getData().size();
+		long unsigned size = packet.getData().size();
 		QCOMPARE(size,1UL);
 		QCOMPARE(packet.getData()[0],arrayId);
 	}
