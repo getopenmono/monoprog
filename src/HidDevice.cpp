@@ -60,7 +60,8 @@ int HidDevice::writeData (char unsigned * data, int bytesToWrite)
 		buffer[i+1] = data[i];
 	}
 	int result = hid_write(usbDevice,buffer,bytesToWrite+1);
-	if (bytesToWrite+1 == result) return CYRET_SUCCESS;
+	// Allow for hid_write() on Windows to write more than what is needed.
+	if (bytesToWrite+1 <= result) return CYRET_SUCCESS;
 	else return -1;
 }
 
