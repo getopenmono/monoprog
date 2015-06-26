@@ -223,12 +223,18 @@ void ElfProgrammer::setupSiliconId ()
 	{
 		output->error() << "No section .cymeta in ELF program " << file.filePath().toStdString();
 	}
-	size_t startAddress = cymeta->address() + 2;
+	IMemorySection & mem = *cymeta;
+	size_t startAddress = mem.address() + 2;
+	char unsigned byte0 = mem[startAddress+0];
+	char unsigned byte1 = mem[startAddress+1];
+	char unsigned byte2 = mem[startAddress+2];
+	char unsigned byte3 = mem[startAddress+3];
+
 	siliconId =
-		((*cymeta)[startAddress+0]<<24) +
-		((*cymeta)[startAddress+1]<<16) +
-		((*cymeta)[startAddress+2]<<8) +
-		(*cymeta)[startAddress+3];
+		(byte0<<24) +
+		(byte1<<16) +
+		(byte2<<8) +
+		byte3;
 	std::ios::fmtflags flags(output->getFlags());
 	OUTPUT(2) << "SiliconId " << std::hex << siliconId;
 	output->setFlags(flags);
