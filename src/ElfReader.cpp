@@ -1,5 +1,5 @@
 #include "ElfReader.h"
-#include "memorySection.h"
+#include "MemorySection.h"
 #include "elfio.hpp"
 
 ElfReader::ElfReader (ELFIO::elfio * elfio_)
