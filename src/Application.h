@@ -10,6 +10,7 @@ enum StatusCode
 	ProgrammingDeviceFailed = 3,
 	FileDoesNotExist = 4,
 	ProgramTypeNotRecognised = 5,
+	MissingElfSection = 6,
 	UnknownError
 };
 

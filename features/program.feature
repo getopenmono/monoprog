@@ -63,3 +63,7 @@ Feature: Application will program Mono device
 			| ledBlinker.elf     |
 			| ledBlinkerSlow.ELF |
 
+	Scenario: Application will complain about missing siliconId in ELF file
+		When I run `monoprog --mock connected --program` on test data `noCyMetaSection.elf`
+		Then the output should contain "No section .cymeta in ELF program"
+		And the exit status should be 6

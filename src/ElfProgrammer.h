@@ -17,6 +17,7 @@ private:
 	void setupProgramMemory ();
 	void setupConfigMemory ();
 	void setupMetadataMemory ();
+	void setupSiliconId ();
 	void useInvertedSummationOfAllBytesChecksum ();
 	bool startBootloader ();
 	bool transferProgramToBooloader ();
@@ -25,6 +26,7 @@ private:
 	std::unique_ptr<IMemorySection> config;
 	std::unique_ptr<IMemorySection> metadata;
 	long unsigned bootloaderVersion;
+	long unsigned siliconId;
 	CyBtldr_CommunicationsData cyComms;
 	bool bootloaderFound;
 };

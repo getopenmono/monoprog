@@ -88,6 +88,7 @@ ProgramStatus ElfProgrammer::program ()
 	setupProgramMemory();
 	setupConfigMemory();
 	setupMetadataMemory();
+	setupSiliconId();
 	if (!code || !config || !metadata) return ProgrammerCorruptProgram;
 	std::ios::fmtflags flags(output->getFlags());
 	OUTPUT(2) << "Program: " << std::hex << code->address() << "-" << code->address()+code->size();
@@ -149,7 +150,7 @@ void ElfProgrammer::useInvertedSummationOfAllBytesChecksum ()
 
 bool ElfProgrammer::startBootloader ()
 {
-	const long unsigned siliconId = 0x2e123069;
+	//const long unsigned siliconId = 0x2e123069;
 	const char unsigned siliconRev = 0;
 	cyComms = getCybtldrCommPack();
 	int result = CyBtldr_StartBootloadOperation(&cyComms,siliconId,siliconRev,&bootloaderVersion);
@@ -213,4 +214,22 @@ void ElfProgrammer::setupMetadataMemory ()
 	{
 		output->error() << "No section .cyloadablemeta in ELF program " << file.filePath().toStdString();
 	}
+}
+
+void ElfProgrammer::setupSiliconId ()
+{
+	std::unique_ptr<IMemorySection> cymeta(reader->getSection(".cymeta"));
+	if (! cymeta)
+	{
+		output->error() << "No section .cymeta in ELF program " << file.filePath().toStdString();
+	}
+	size_t startAddress = cymeta->address() + 2;
+	siliconId =
+		((*cymeta)[startAddress+0]<<24) +
+		((*cymeta)[startAddress+1]<<16) +
+		((*cymeta)[startAddress+2]<<8) +
+		(*cymeta)[startAddress+3];
+	std::ios::fmtflags flags(output->getFlags());
+	OUTPUT(2) << "SiliconId " << std::hex << siliconId;
+	output->setFlags(flags);
 }

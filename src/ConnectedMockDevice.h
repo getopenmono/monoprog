@@ -83,6 +83,7 @@ public:
 		{
 			case EnterBootLoader:
 			{
+				// Emulate the PSoC development board:
 				// siliconId=0x2e123069, siliconRev=0, bootloaderversion=0x01011e
 				int data[] = {0x69,0x30,0x12,0x2E,0x00,0x1E,0x01,0x01};
 				fillBuffer(buffer,data,sizeof(data)/sizeof(data[0]));
