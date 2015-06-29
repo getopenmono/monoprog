@@ -1,4 +1,4 @@
-#include "AutoTest.h"
+#include "autotest.h"
 
 class TestQString : public QObject
 {

@@ -1,4 +1,4 @@
-#include "AutoTest.h"
+#include "autotest.h"
 #include "OutputCollector.h"
 #include <ostream>
 #include <sstream>

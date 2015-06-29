@@ -1,4 +1,4 @@
-#include "AutoTest.h"
+#include "autotest.h"
 #include "BootloaderPacket.h"
 #include "cybtldr_command.h"
 

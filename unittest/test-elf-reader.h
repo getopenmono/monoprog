@@ -1,4 +1,4 @@
-#include "AutoTest.h"
+#include "autotest.h"
 #include "ElfReader.h"
 #include "IMemorySection.h"
 #include "CombinedMemory.h"
