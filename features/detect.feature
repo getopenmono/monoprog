@@ -14,11 +14,11 @@ Feature: Application will detect Mono device
 			| --detect |
 
 	Scenario Outline: Application invoked with detect argument
-		When I run `monoprog --mock connected <arg>`
+		When I run `monoprog --detect --mock <board>`
 		Then the output should contain "Mono device detected"
 		And the exit status should be 0
 
 		Examples:
-			| arg      |
-			| -d       |
-			| --detect |
+			| board     |
+			| devboard  |
+			| monoboard |

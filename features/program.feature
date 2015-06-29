@@ -4,7 +4,7 @@ Feature: Application will program Mono device
 	I want the application to program Mono over the USB.
 
 	Scenario Outline: Application will complain about missing files
-		When I run `monoprog --mock connected --program` on test data `<file>`
+		When I run `monoprog --mock devboard --program` on test data `<file>`
 		Then the output should contain "File does not exist"
 		And the exit status should be 4
 
@@ -14,7 +14,7 @@ Feature: Application will program Mono device
 			| mumbo jumbo      |
 
 	Scenario Outline: Application will complain about wrong file type
-		When I run `monoprog --mock connected --program` on test data `<file>`
+		When I run `monoprog --mock monoboard --program` on test data `<file>`
 		Then the output should contain "Unknown program type"
 		And the exit status should be 5
 
@@ -24,7 +24,7 @@ Feature: Application will program Mono device
 			| b.o   |
 
 	Scenario Outline: Application will complain about broken files
-		When I run `monoprog --mock connected --program` on test data `<file>`
+		When I run `monoprog --mock devboard --program` on test data `<file>`
 		Then the output should contain "Corrupt program"
 		And the exit status should be 3
 
@@ -34,13 +34,13 @@ Feature: Application will program Mono device
 			| broken.ELF   |
 
 	Scenario Outline: Application will program device with a valid CYACD file
-		When I run `monoprog --mock connected --program` on test data `<cyacd>`
+		When I run `monoprog --mock <board> --program` on test data `<cyacd>`
 		And the exit status should be 0
 
 		Examples:
-			| cyacd                |
-			| ledBlinker.cyacd     |
-			| ledBlinkerSlow.CYACD |
+			| cyacd                | board    |
+			| ledBlinker.cyacd     | devboard |
+			| ledBlinkerSlow.CYACD | devboard |
 
 	Scenario Outline: Application will complain about missing connection when Mono not detected
 		When I run `monoprog --mock disconnected --program` on test data `<file>`
@@ -53,17 +53,19 @@ Feature: Application will program Mono device
 			| ledBlinkerSlow.CYACD |
 			| ledBlinker.elf       |
 			| ledBlinkerSlow.ELF   |
+			| wayDisplayTest2.elf  |
 
 	Scenario Outline: Application will program device with a valid ELF file
-		When I run `monoprog --mock connected --program` on test data `<elf>`
+		When I run `monoprog --mock <board> --program` on test data `<elf>`
 		And the exit status should be 0
 
 		Examples:
-			| elf                |
-			| ledBlinker.elf     |
-			| ledBlinkerSlow.ELF |
+			| elf                 | board     |
+			| ledBlinker.elf      | devboard  |
+			| ledBlinkerSlow.ELF  | devboard  |
+			| wayDisplayTest2.elf | monoboard |
 
 	Scenario: Application will complain about missing siliconId in ELF file
-		When I run `monoprog --mock connected --program` on test data `noCyMetaSection.elf`
+		When I run `monoprog --mock devboard --program` on test data `noCyMetaSection.elf`
 		Then the output should contain "No section .cymeta in ELF program"
 		And the exit status should be 6

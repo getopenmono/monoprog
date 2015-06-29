@@ -26,11 +26,12 @@ enum OperationMode
 	Program
 };
 
-enum DeviceState
+enum DeviceType
 {
 	RealDevice,
 	MockNotConnected,
-	MockConnected
+	MockDevBoard,
+	MockMonoBoard
 };
 
 } // namespace
@@ -38,7 +39,7 @@ enum DeviceState
 class Arguments
 {
 public:
-	static QStringList deviceState;
+	static QStringList deviceType;
 	Arguments (QCoreApplication const & qtApp, OutputCollector & output)
 	{
 		setupStandardOptions();
@@ -49,18 +50,18 @@ public:
 		setupDebugOptions();
 		parser.process(qtApp);
 		decideOperationModeFromArguments();
-		decideDeviceState(output);
+		decideDeviceType(output);
 	}
 	~Arguments ()
 	{
-		delete simulatedDeviceState;
+		delete simulatedDeviceType;
 		delete detectOption;
 	}
 	OperationMode getOperationMode () const
 	{
 		return mode;
 	}
-	DeviceState getDevice () const
+	DeviceType getDevice () const
 	{
 		return device;
 	}
@@ -88,13 +89,13 @@ private:
 	}
 	void setupDeviceSimulationOptions ()
 	{
-		simulatedDeviceState = new QCommandLineOption
+		simulatedDeviceType = new QCommandLineOption
 		(
 			"mock",
-			"Simulates device to be in <state>.",
-			"state"
+			"Simulates device to be in <type>.",
+			"type"
 		);
-		parser.addOption(*simulatedDeviceState);
+		parser.addOption(*simulatedDeviceType);
 	}
 	void setupLicenseOptions ()
 	{
@@ -135,24 +136,26 @@ private:
 		);
 		parser.addOption(*debugOption);
 	}
-	void decideDeviceState (OutputCollector & output)
+	void decideDeviceType (OutputCollector & output)
 	{
-		QString state = parser.value(*simulatedDeviceState);
-		if (state.size() == 0) device = RealDevice;
-		else if (state == deviceState.at(0)) device = MockNotConnected;
-		else if (state == deviceState.at(1)) device = MockConnected;
+		QString type = parser.value(*simulatedDeviceType);
+		if (type.size() == 0) device = RealDevice;
+		else if (type == deviceType.at(0)) device = MockNotConnected;
+		else if (type == deviceType.at(1)) device = MockDevBoard;
+		else if (type == deviceType.at(2)) device = MockMonoBoard;
 		else
 		{
 			device = MockNotConnected;
 			mode = UnknownMockDevice;
-			output.error() << "Unknown mock device state requested: "
-				<< state.toStdString();
+			output.error() << "Unknown mock device type requested: "
+				<< type.toStdString();
 			QString mock;
-			foreach (mock, deviceState)
+			foreach (mock, deviceType)
 			{
 				output.error() << " '" << mock.toStdString()
 					<< "' is a legal mock device.";
 			}
+			output.error();
 		}
 	}
 	void decideOperationModeFromArguments ()
@@ -167,19 +170,20 @@ private:
 		else mode = Unknown;
 	}
 	QCommandLineParser parser;
-	QCommandLineOption * simulatedDeviceState;
+	QCommandLineOption * simulatedDeviceType;
 	QCommandLineOption * licenseOption;
 	QCommandLineOption * detectOption;
 	QCommandLineOption * programOption;
 	QCommandLineOption * debugOption;
 	OperationMode mode;
-	DeviceState device;
+	DeviceType device;
 	QString programPath;
 };
 
-QStringList Arguments::deviceState = QStringList()
+QStringList Arguments::deviceType = QStringList()
 	<< "disconnected" // 0
-	<< "connected" // 1
+	<< "devboard" // 1
+	<< "monoboard" // 2
 	;
 
 Application::Application (QCoreApplication * qtApp_, std::ostream & out, std::ostream & error)
@@ -212,8 +216,10 @@ IDeviceCommunicator * Application::createDeviceCommunication () const
 			return new HidDevice(*output);
 		case MockNotConnected:
 			return new NotConnectedMockDevice(*output);
-		case MockConnected:
-			return new ConnectedMockDevice(*output);
+		case MockDevBoard:
+			return new ConnectedMockDevice(*output,0x2e123069);
+		case MockMonoBoard:
+			return new ConnectedMockDevice(*output,0x2e16a069);
 		default:
 			throw "Unknown device";
 			return 0;

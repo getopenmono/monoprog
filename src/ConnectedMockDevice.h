@@ -13,9 +13,10 @@ class ConnectedMockDevice : public IDeviceCommunicator
 {
 public:
 	static int const BUFFERSIZE = 64;
-	ConnectedMockDevice (OutputCollector & output_)
+	ConnectedMockDevice (OutputCollector & output_, uint32_t siliconId_)
 	: output(output_)
 	, returnType(Unknown)
+	, siliconId(siliconId_)
 	{
 		OUTPUT(1) << "Using connected mock device.";
 	}
@@ -84,8 +85,17 @@ public:
 			case EnterBootLoader:
 			{
 				// Emulate the PSoC development board:
-				// siliconId=0x2e123069, siliconRev=0, bootloaderversion=0x01011e
-				int data[] = {0x69,0x30,0x12,0x2E,0x00,0x1E,0x01,0x01};
+				int data[8];
+				data[0] = siliconId & 0xFF;
+				data[1] = (siliconId >> 8) & 0xFF;
+				data[2] = (siliconId >> 16) & 0xFF;
+				data[3] = (siliconId >> 24) & 0xFF;
+				// siliconRev=0
+				data[4] = 0x00;
+				// bootloaderversion=0x01011e
+				data[5] = 0x1E;
+				data[6] = 0x01;
+				data[7] = 0x01;
 				fillBuffer(buffer,data,sizeof(data)/sizeof(data[0]));
 				break;
 			}
@@ -200,6 +210,7 @@ private:
 		NoReturn,
 		Unknown
 	} returnType;
+	uint32_t siliconId;
 	std::vector<uint8_t> dataReceived;
 	int arrayId;
 	int rowNr;
