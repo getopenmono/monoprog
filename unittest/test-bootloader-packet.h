@@ -12,7 +12,7 @@ private slots:
 	void enterBootloaderPacketGivesEnterBootloaderCommand ()
 	{
 		// Arrange
-		char unsigned buffer[] = {CMD_START,CMD_ENTER_BOOTLOADER,0x00,0x00,0xC7,0xFF,CMD_STOP};
+		uint8_t buffer[] = {CMD_START,CMD_ENTER_BOOTLOADER,0x00,0x00,0xC7,0xFF,CMD_STOP};
 		CONSTRUCTPACKET(buffer,packet);
 		// Assert
 		QCOMPARE(packet.getCommand(),CMD_ENTER_BOOTLOADER);
@@ -20,8 +20,8 @@ private slots:
 	void getFlashSizePacketGivesFlashSizeCommandAndData ()
 	{
 		// Arrange
-		const char unsigned arrayId = 0x00;
-		char unsigned buffer[] = {CMD_START,CMD_GET_FLASH_SIZE,0x01,0x00,arrayId,0xCC,0xFF,CMD_STOP};
+		const uint8_t arrayId = 0x00;
+		uint8_t buffer[] = {CMD_START,CMD_GET_FLASH_SIZE,0x01,0x00,arrayId,0xCC,0xFF,CMD_STOP};
 		CONSTRUCTPACKET(buffer,packet);
 		// Assert
 		QCOMPARE(packet.getCommand(),CMD_GET_FLASH_SIZE);

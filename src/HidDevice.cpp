@@ -48,11 +48,11 @@ int HidDevice::closeConnection ()
 	return CYRET_SUCCESS;
 }
 
-int HidDevice::writeData (char unsigned * data, int bytesToWrite)
+int HidDevice::writeData (uint8_t * data, int bytesToWrite)
 {
 	OUTPUT(3) << "Writing " << bytesToWrite << " bytes to real device.";
 	output.outputHex(4,(char const *)data,bytesToWrite,16);
-	char unsigned buffer [CypressPsoc::BufferSize+1];
+	uint8_t buffer [CypressPsoc::BufferSize+1];
 	// The first byte needs to be zero, do not know why.
 	buffer[0] = 0;
 	for (int i = 0; i < bytesToWrite; ++i)
@@ -65,7 +65,7 @@ int HidDevice::writeData (char unsigned * data, int bytesToWrite)
 	else return -1;
 }
 
-int HidDevice::readData (char unsigned * buffer, int bytesToRead)
+int HidDevice::readData (uint8_t * buffer, int bytesToRead)
 {
 	OUTPUT(5) << "Reading " << bytesToRead << " bytes from real device.";
 	int bytesRead = hid_read(usbDevice,buffer,bytesToRead);
@@ -75,7 +75,7 @@ int HidDevice::readData (char unsigned * buffer, int bytesToRead)
 	else return -1;
 }
 
-void HidDevice::progressUpdate (char unsigned arrayId, int unsigned short rowNr)
+void HidDevice::progressUpdate (uint8_t arrayId, int unsigned short rowNr)
 {
 	OUTPUT(3) << "Completed array '" << (int) arrayId << "' row " << rowNr;
 	PROGRESS(1);

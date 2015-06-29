@@ -20,7 +20,7 @@ private slots:
 	void readerReturnsDataFromExistingSection ()
 	{
 		// Arrange
-		char unsigned metadata[] =
+		uint8_t metadata[] =
 		{
 			0x99,0x11,0x3d,0x00,0x00,0x3c,0x00,0x00,0x00,0x40,0x73,0x00,0x00,0x00,0x00,0x00,
 			0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -36,7 +36,7 @@ private slots:
 		QCOMPARE(sut->size(),(size_t)0x40);
 		for (size_t i = 0; i < sut->size(); ++i)
 		{
-			QCOMPARE((*sut)[i+sut->address()],(char)metadata[i]);
+			QCOMPARE((*sut)[i+sut->address()],(uint8_t)metadata[i]);
 		}
 	}
 	void memorySectionsCanBeCombined ()
@@ -59,9 +59,9 @@ private slots:
 		// Assert
 		QCOMPARE(sut->address(),(size_t)0x3d00);
 		QCOMPARE(sut->size(),(size_t)0x5b8);
-		QCOMPARE((*sut)[0x3d08],(char)0x75);
-		QCOMPARE((*sut)[0x424b],(char)0x00);
-		QCOMPARE((*sut)[0x424d],(char)0x51);
+		QCOMPARE((*sut)[0x3d08],(uint8_t)0x75);
+		QCOMPARE((*sut)[0x424b],(uint8_t)0x00);
+		QCOMPARE((*sut)[0x424d],(uint8_t)0x51);
 	}
 private:
 	ElfReader setUpTestReader ()

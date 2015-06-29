@@ -24,7 +24,7 @@ public:
 	{
 		return (i >= address() && i < address()+size());
 	}
-	virtual char operator[] (size_t i) const
+	virtual uint8_t operator[] (size_t i) const
 	{
 		if (indexInRange(i)) return _data[i-address()];
 		else return 0;

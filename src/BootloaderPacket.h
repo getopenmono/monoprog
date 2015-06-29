@@ -5,7 +5,7 @@
 class BootloaderPacket
 {
 public:
-	BootloaderPacket (char unsigned * packet, size_t size)
+	BootloaderPacket (uint8_t * packet, size_t size)
 	: code(0)
 	{
 		size_t i = 0;
@@ -23,7 +23,7 @@ public:
 		i += 2;
 		// The following bytes are the data.
 		if (size <= i+length) return;
-		data = std::vector<char unsigned>(packet+i,packet+i+length);
+		data = std::vector<uint8_t>(packet+i,packet+i+length);
 		i += length;
 		// The last two bytes before the last byte are the checksum, LSB order.
 		if (size <= i+1) return;
@@ -36,13 +36,13 @@ public:
 	{
 		return code;
 	}
-	std::vector<char unsigned> const & getData () const
+	std::vector<uint8_t> const & getData () const
 	{
 		return data;
 	}
 private:
 	int code;
-	std::vector<char unsigned> data;
+	std::vector<uint8_t> data;
 };
 
 #endif // __BOOTLOADERPACKET_H

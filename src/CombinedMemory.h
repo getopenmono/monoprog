@@ -8,7 +8,6 @@ class CombinedMemory : public IMemorySection
 public:
 	CombinedMemory (std::unique_ptr<IMemorySection> x, std::unique_ptr<IMemorySection> y)
 	{
-		// TODO: Throw if overlap?
 		if (x->address() < y->address())
 		{
 			low.swap(x);
@@ -19,6 +18,7 @@ public:
 			low.swap(y);
 			high.swap(x);
 		}
+		if (low->indexInRange(high->address())) throw "Overlapping memory sections";
 	}
 	virtual size_t address () const
 	{
@@ -32,7 +32,7 @@ public:
 	{
 		return (low->indexInRange(i) || high->indexInRange(i));
 	}
-	virtual char operator[] (size_t i) const
+	virtual uint8_t operator[] (size_t i) const
 	{
 		if (low->indexInRange(i)) return (*low)[i];
 		else return (*high)[i];

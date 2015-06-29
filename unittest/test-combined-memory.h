@@ -11,11 +11,11 @@ private slots:
 	void combiningTwoSectionsGivesUnionOfAddressSpace ()
 	{
 		// Arrange
-		char unsigned one[] = {0x01,0x02};
+		uint8_t one[] = {0x01,0x02};
 		std::unique_ptr<IMemorySection> low(new MemorySection(0x100,(char const *)one,2));
-		char unsigned two[] = {0x04,0x05};
+		uint8_t two[] = {0x04,0x05};
 		std::unique_ptr<IMemorySection> high(new MemorySection(0x103,(char const *)two,2));
-		char unsigned layout[] = {0x01,0x02,0x00,0x04,0x05};
+		uint8_t layout[] = {0x01,0x02,0x00,0x04,0x05};
 		// Act
 		std::unique_ptr<IMemorySection> sut(new CombinedMemory(std::move(high),std::move(low)));
 		// Assert
@@ -23,9 +23,19 @@ private slots:
 		QCOMPARE(sut->size(),sizeof(layout));
 		for (size_t i = 0; i < sizeof(layout); ++i)
 		{
-			QCOMPARE((*sut)[i+sut->address()],(char)layout[i]);
+			QCOMPARE((*sut)[i+sut->address()],layout[i]);
 		}
-		QCOMPARE((*sut)[sut->address()-1],(char)0x00);
+		QCOMPARE((*sut)[sut->address()-1],(uint8_t)0x00);
+	}
+	void overlappingAddressSpacesGivesException ()
+	{
+		// Arrange
+		uint8_t one[] = {0x01,0x02};
+		std::unique_ptr<IMemorySection> low(new MemorySection(0x10000,(char const *)one,2));
+		uint8_t two[] = {0x04,0x05};
+		std::unique_ptr<IMemorySection> high(new MemorySection(0x10001,(char const *)two,2));
+		// Assert
+		QVERIFY_EXCEPTION_THROWN(new CombinedMemory(std::move(low),std::move(high)),char*);
 	}
 };
 

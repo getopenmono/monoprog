@@ -201,7 +201,7 @@ void Application::setupApplicationConstants ()
 {
 	QCoreApplication::setApplicationName("monoprog");
 	QCoreApplication::setOrganizationName("Monolit ApS");
-	QCoreApplication::setApplicationVersion("0.3");
+	QCoreApplication::setApplicationVersion("0.4");
 }
 
 IDeviceCommunicator * Application::createDeviceCommunication () const

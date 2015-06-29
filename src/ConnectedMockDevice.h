@@ -27,7 +27,7 @@ public:
 	{
 		return CYRET_SUCCESS;
 	}
-	virtual int writeData (char unsigned * data, int bytesToWrite)
+	virtual int writeData (uint8_t * data, int bytesToWrite)
 	{
 		OUTPUT(3) << "Writing " << bytesToWrite << " bytes to mock device.";
 		output.outputHex(4,(char const *)data,bytesToWrite,16);
@@ -46,14 +46,14 @@ public:
 			}
 			case CMD_SEND_DATA:
 			{
-				std::vector<char unsigned> const & data = packet.getData();
+				std::vector<uint8_t> const & data = packet.getData();
 				for (size_t i = 0; i < data.size(); ++i) dataReceived.push_back(data[i]);
 				returnType = SendData;
 				return CYRET_SUCCESS;
 			}
 			case CMD_PROGRAM_ROW:
 			{
-				std::vector<char unsigned> const & data = packet.getData();
+				std::vector<uint8_t> const & data = packet.getData();
 				arrayId = data[0];
 				rowNr = data[1] + (data[2] << 8);
 				OUTPUT(5) << "array id " << arrayId << " row " << rowNr;
@@ -76,7 +76,7 @@ public:
 		returnType = Unknown;
 		return -1;
 	}
-	virtual int readData (char unsigned * buffer, int bytesToRead)
+	virtual int readData (uint8_t * buffer, int bytesToRead)
 	{
 		OUTPUT(3) << "Reading " << bytesToRead << " bytes from mock device.";
 		switch (returnType)
@@ -126,7 +126,7 @@ public:
 		output.outputHex(4,(char const *)buffer,bytesToRead,16);
 		return CYRET_SUCCESS;
 	}
-	virtual void progressUpdate (char unsigned arrayId, int unsigned short rowNr)
+	virtual void progressUpdate (uint8_t arrayId, int unsigned short rowNr)
 	{
 		OUTPUT(2) << "Completed array '" << (int) arrayId << "' row " << rowNr;
 		PROGRESS(1);
@@ -139,7 +139,7 @@ public:
 	{
 	}
 private:
-	void fillBuffer (char unsigned * buffer, int const * data, size_t size)
+	void fillBuffer (uint8_t * buffer, int const * data, size_t size)
 	{
 		buffer[0] = CMD_START;
 		buffer[1] = CYRET_SUCCESS;
@@ -152,7 +152,7 @@ private:
 		buffer[i+1] = checkSum >> 8;
 		buffer[i+2] = CMD_STOP;
 	}
-	size_t calculatePacketCheckSum (char unsigned * buffer, size_t size)
+	size_t calculatePacketCheckSum (uint8_t * buffer, size_t size)
 	{
 		short unsigned sum = 0;
 		while (size-- > 0)
@@ -179,8 +179,8 @@ private:
 		output.outputHex(5,buffer.data()+5,size,32);
 		short unsigned sum = 0;
 		for (size_t j = 0; j < size+5; ++j) sum += buffer[j];
-		char unsigned checksum = 1 + ~sum;
-		char unsigned checksum2 = (unsigned char)(checksum + arrayId + rowNr + (rowNr >> 8) + size + (size >> 8));
+		uint8_t checksum = 1 + ~sum;
+		uint8_t checksum2 = (uint8_t)(checksum + arrayId + rowNr + (rowNr >> 8) + size + (size >> 8));
 		return checksum2;
 	}
 	void cleanup ()
@@ -200,7 +200,7 @@ private:
 		NoReturn,
 		Unknown
 	} returnType;
-	std::vector<char unsigned> dataReceived;
+	std::vector<uint8_t> dataReceived;
 	int arrayId;
 	int rowNr;
 };

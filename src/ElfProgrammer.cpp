@@ -55,9 +55,9 @@ struct ConfiguredFlashRow
 	}
 	int writeToDevice () const
 	{
-		int err = CyBtldr_ProgramRow(arrayId,rowNum,(char unsigned *)&buffer,BUFSIZE);
+		int err = CyBtldr_ProgramRow(arrayId,rowNum,(uint8_t *)&buffer,BUFSIZE);
 		if (CYRET_SUCCESS != err) return err;
-		char unsigned checksum = CyBtldr_ComputeChecksum((char unsigned *)&buffer,BUFSIZE);
+		uint8_t checksum = CyBtldr_ComputeChecksum((uint8_t *)&buffer,BUFSIZE);
 		err = CyBtldr_VerifyRow(arrayId,rowNum,checksum);
 		return err;
 	}
@@ -151,7 +151,7 @@ void ElfProgrammer::useInvertedSummationOfAllBytesChecksum ()
 bool ElfProgrammer::startBootloader ()
 {
 	//const long unsigned siliconId = 0x2e123069;
-	const char unsigned siliconRev = 0;
+	const uint8_t siliconRev = 0;
 	cyComms = getCybtldrCommPack();
 	int result = CyBtldr_StartBootloadOperation(&cyComms,siliconId,siliconRev,&bootloaderVersion);
 	if (CYRET_SUCCESS == result)
@@ -225,11 +225,10 @@ void ElfProgrammer::setupSiliconId ()
 	}
 	IMemorySection & mem = *cymeta;
 	size_t startAddress = mem.address() + 2;
-	char unsigned byte0 = mem[startAddress+0];
-	char unsigned byte1 = mem[startAddress+1];
-	char unsigned byte2 = mem[startAddress+2];
-	char unsigned byte3 = mem[startAddress+3];
-
+	uint8_t byte0 = mem[startAddress+0];
+	uint8_t byte1 = mem[startAddress+1];
+	uint8_t byte2 = mem[startAddress+2];
+	uint8_t byte3 = mem[startAddress+3];
 	siliconId =
 		(byte0<<24) +
 		(byte1<<16) +

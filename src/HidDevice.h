@@ -10,9 +10,9 @@ public:
 	HidDevice (OutputCollector & output);
 	virtual int openConnection ();
 	virtual int closeConnection ();
-	virtual int writeData (char unsigned * data, int bytesToWrite);
-	virtual int readData (char unsigned * buffer, int bytesToRead);
-	virtual void progressUpdate (char unsigned arrayId, int unsigned short rowNr);
+	virtual int writeData (uint8_t * data, int bytesToWrite);
+	virtual int readData (uint8_t * buffer, int bytesToRead);
+	virtual void progressUpdate (uint8_t arrayId, int unsigned short rowNr);
 	virtual int unsigned getBufferSize ();
 	virtual ~HidDevice ();
 private:
