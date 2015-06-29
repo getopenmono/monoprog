@@ -57,13 +57,18 @@ Feature: Application will program Mono device
 
 	Scenario Outline: Application will program device with a valid ELF file
 		When I run `monoprog --mock <board> --program` on test data `<elf>`
-		And the exit status should be 0
+		Then the exit status should be 0
 
 		Examples:
 			| elf                 | board     |
 			| ledBlinker.elf      | devboard  |
 			| ledBlinkerSlow.ELF  | devboard  |
 			| wayDisplayTest2.elf | monoboard |
+
+	Scenario: Application will complain when silicon ID does not match program.
+		When I run `monoprog --mock devboard --program` on test data `wayDisplayTest2.elf`
+		Then the output should contain "Silicon ID for device does not match program"
+		And the exit status should be 7
 
 	Scenario: Application will complain about missing siliconId in ELF file
 		When I run `monoprog --mock devboard --program` on test data `noCyMetaSection.elf`

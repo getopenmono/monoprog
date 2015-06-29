@@ -303,6 +303,9 @@ StatusCode Application::programDevice (QString const & appPath)
 		case ProgrammerNoConnectionToMonoDevice:
 			output->error() << "No connection to Mono device.";
 			return NoConnectionToMonoDevice;
+		case ProgrammerWrongSiliconId:
+			output->error() << "Silicon ID for device does not match program.";
+			return WrongSiliconId;
 		default:
 			output->error() << "Programming failed for unknown reason.";
 			return ProgrammingDeviceFailed;

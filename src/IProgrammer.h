@@ -9,6 +9,7 @@ enum ProgramStatus
 	ProgrammerNoConnectionToMonoDevice,
 	ProgrammerCorruptProgram,
 	ProgrammerUnsupportedMetaData,
+	ProgrammerWrongSiliconId,
 	ProgrammerFailed
 };
 

@@ -19,7 +19,7 @@ private:
 	void setupMetadataMemory ();
 	void setupSiliconId ();
 	void useInvertedSummationOfAllBytesChecksum ();
-	bool startBootloader ();
+	ProgramStatus startBootloader ();
 	bool transferProgramToBooloader ();
 	std::unique_ptr<ElfReader> reader;
 	std::unique_ptr<IMemorySection> code;

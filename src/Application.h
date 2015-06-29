@@ -11,6 +11,7 @@ enum StatusCode
 	FileDoesNotExist = 4,
 	ProgramTypeNotRecognised = 5,
 	MissingElfSection = 6,
+	WrongSiliconId = 7,
 	UnknownError
 };
 

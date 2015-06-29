@@ -96,7 +96,8 @@ ProgramStatus ElfProgrammer::program ()
 	OUTPUT(2) << "Meta: " << std::hex << metadata->address() << "-" << metadata->address()+metadata->size();
 	output->setFlags(flags);
 	useInvertedSummationOfAllBytesChecksum();
-	if (! startBootloader()) return ProgrammerNoConnectionToMonoDevice;
+	ProgramStatus status = startBootloader();
+	if (ProgrammerSuccess != status) return status;
 	if (! transferProgramToBooloader()) return ProgrammerFailed;
 	return ProgrammerSuccess;
 }
@@ -148,21 +149,23 @@ void ElfProgrammer::useInvertedSummationOfAllBytesChecksum ()
 	CyBtldr_SetCheckSumType(SUM_CHECKSUM);
 }
 
-bool ElfProgrammer::startBootloader ()
+ProgramStatus ElfProgrammer::startBootloader ()
 {
-	//const long unsigned siliconId = 0x2e123069;
 	const uint8_t siliconRev = 0;
 	cyComms = getCybtldrCommPack();
 	int result = CyBtldr_StartBootloadOperation(&cyComms,siliconId,siliconRev,&bootloaderVersion);
-	if (CYRET_SUCCESS == result)
+	switch (result)
 	{
-		bootloaderFound = true;
-		return true;
-	}
-	else
-	{
-		OUTPUT(3) << "Could not start bootloader, CYRET=" << result;
-		return false;
+		case CYRET_SUCCESS:
+			bootloaderFound = true;
+			return ProgrammerSuccess;
+		case CYRET_ERR_DEVICE:
+			return ProgrammerWrongSiliconId;
+		case -1:
+			return ProgrammerNoConnectionToMonoDevice;
+		default:
+			OUTPUT(3) << "Could not start bootloader, CYRET=" << result;
+			return ProgrammerFailed;
 	}
 }
 
@@ -235,6 +238,6 @@ void ElfProgrammer::setupSiliconId ()
 		(byte2<<8) +
 		byte3;
 	std::ios::fmtflags flags(output->getFlags());
-	OUTPUT(2) << "SiliconId " << std::hex << siliconId;
+	OUTPUT(2) << "SiliconId: " << std::hex << siliconId;
 	output->setFlags(flags);
 }
