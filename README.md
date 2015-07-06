@@ -45,14 +45,16 @@ Monoprog has been tested with Visual Studio Express 2010.  It might work in othe
 
 - Install [Qt for VS2010](http://download.qt.io/official_releases/qt/5.5/5.5.0/qt-opensource-windows-x86-msvc2010-5.5.0.exe).
 
- - Add Qt (eg. C:\Qt\Qt5.5.0\5.5\msvc2010\bin) and msbuild (eg. C:\Windows\Microsoft.NET\Framework\v4.0.30319) to your PATH.
- - Run
- 
-     C:> setup.bat
-     C:> unittest.bat
-     C:> run.bat
+- Add Qt (eg. C:\Qt\Qt5.5.0\5.5\msvc2010\bin) and msbuild (eg. C:\Windows\Microsoft.NET\Framework\v4.0.30319) to your PATH.
 
- - Optionally install Ruby (2.0 for X86): http://dl.bintray.com/oneclick/rubyinstaller/rubyinstaller-2.0.0-p645.exe,
-   add bin to PATH.  Aruba: gem install aruba.  Also, http://adoxa.altervista.org/ansicon/
-   Then
-     C:> acceptancetest.bat
+Run
+ 
+    C:> setup.bat
+    C:> unittest.bat
+    C:> run.bat
+
+- Optionally install Ruby (2.0 for X86): http://dl.bintray.com/oneclick/rubyinstaller/rubyinstaller-2.0.0-p645.exe, add bin to PATH.  Aruba: gem install aruba.  Optionally, http://adoxa.altervista.org/ansicon.
+ 
+Run
+
+    C:> acceptancetest.bat
