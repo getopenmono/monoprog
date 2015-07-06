@@ -3,6 +3,7 @@
 #include "IDeviceCommunicator.h"
 #include "OutputCollector.h"
 #include "hidapi.h"
+#include <cstdint>
 
 class HidDevice : public IDeviceCommunicator
 {

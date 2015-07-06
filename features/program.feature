@@ -69,8 +69,3 @@ Feature: Application will program Mono device
 		When I run `monoprog --mock devboard --program` on test data `wayDisplayTest2.elf`
 		Then the output should contain "Silicon ID for device does not match program"
 		And the exit status should be 7
-
-	Scenario: Application will complain about missing siliconId in ELF file
-		When I run `monoprog --mock devboard --program` on test data `noCyMetaSection.elf`
-		Then the output should contain "No section .cymeta in ELF program"
-		And the exit status should be 6

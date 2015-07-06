@@ -41,11 +41,14 @@ To run acceptance tests, install [Aruba](https://github.com/cucumber/aruba) and
 
 Monoprog has been tested with Visual Studio Express 2010.  It might work in other configurations, please report back.
 
-- Install [Visual Studio C++ Express 2010]().
+- Install [Visual Studio C++ Express 2010](https://app.vssps.visualstudio.com/profile/review?download=true&family=VisualStudioCExpress&release=VisualStudio2010).
 
-- Install Install Qt for VS2010 from http://www.qt.io/download-open-source.
+- Install [Qt for VS2010](http://download.qt.io/official_releases/qt/5.5/5.5.0/qt-opensource-windows-x86-msvc2010-5.5.0.exe).
 
+ - Add Qt (eg. C:\Qt\Qt5.5.0\5.5\msvc2010\bin) and msbuild (eg. C:\Windows\Microsoft.NET\Framework\v4.0.30319) to your PATH.
  - Run
+ 
+     C:> setup.bat
      C:> unittest.bat
      C:> run.bat
 

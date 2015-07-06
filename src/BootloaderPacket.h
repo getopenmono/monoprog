@@ -1,5 +1,6 @@
 #if !defined(__BOOTLOADERPACKET_H)
 #define __BOOTLOADERPACKET_H
+#include <cstdint>
 #include <vector>
 
 class BootloaderPacket
