@@ -37,6 +37,12 @@ public:
 		if (low->indexInRange(i)) return (*low)[i];
 		else return (*high)[i];
 	}
+	virtual void relocateTo (size_t targetAddress)
+	{
+		size_t oldAddress = low->address();
+		low->relocateTo(targetAddress);
+		high->relocateTo(targetAddress+high->address()-oldAddress);
+	}
 private:
 	std::unique_ptr<IMemorySection> low;
 	std::unique_ptr<IMemorySection> high;

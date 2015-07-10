@@ -112,9 +112,9 @@ bool ElfProgrammer::transferProgramToBooloader ()
 	for (size_t i = 0; i < rows; ++i)
 	{
 		ConfiguredFlashRow row(i,*code,*config);
-		OUTPUT(5) << "arrayId=" << row.arrayId;
-		OUTPUT(5) << "rowNum=" << row.rowNum;
-		output->outputHex(5,row.buffer,row.BUFSIZE,32);
+		OUTPUT(6) << "arrayId=" << row.arrayId;
+		OUTPUT(6) << "rowNum=" << row.rowNum;
+		output->outputHex(6,row.buffer,row.BUFSIZE,32);
 		int res = row.writeToDevice();
 		if (CYRET_SUCCESS != res)
 		{
@@ -131,9 +131,9 @@ bool ElfProgrammer::transferProgramToBooloader ()
 	// than one flash row.  Maybe the last 0x20 bytes are just zero padded?
 	if (metaRowSize > 0x100) return ProgrammerUnsupportedMetaData;
 	ConfiguredFlashRow row(metaRowStartAddress,*metadata);
-	OUTPUT(5) << "arrayId=" << row.arrayId;
-	OUTPUT(5) << "rowNum=" << row.rowNum;
-	output->outputHex(5,row.buffer,row.BUFSIZE,32);
+	OUTPUT(6) << "arrayId=" << row.arrayId;
+	OUTPUT(6) << "rowNum=" << row.rowNum;
+	output->outputHex(6,row.buffer,row.BUFSIZE,32);
 	if (CYRET_SUCCESS != row.writeToDevice()) return false;
 	updater(row.arrayId,row.rowNum);
 	const unsigned long BL_VER_SUPPORT_VERIFY = 0x010214;
@@ -195,9 +195,20 @@ void ElfProgrammer::setupProgramMemory ()
 		output->error() << "No section .rodata in ELF program " << file.filePath().toStdString();
 		return;
 	}
-	code = std::unique_ptr<IMemorySection>
+	std::unique_ptr<IMemorySection> realcode = std::unique_ptr<IMemorySection>
 	(
 		new CombinedMemory(std::move(text),std::move(rodata))
+	);
+	std::unique_ptr<IMemorySection> data(reader->getSection(".data"));
+	if (! data)
+	{
+		output->error() << "No section .data in ELF program " << file.filePath().toStdString();
+		return;
+	}
+	data->relocateTo(realcode->address()+realcode->size());
+	code = std::unique_ptr<IMemorySection>
+	(
+		new CombinedMemory(std::move(realcode),std::move(data))
 	);
 }
 

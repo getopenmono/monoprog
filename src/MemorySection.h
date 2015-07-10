@@ -29,6 +29,10 @@ public:
 		if (indexInRange(i)) return _data[i-address()];
 		else return 0;
 	}
+	virtual void relocateTo (size_t targetAddress)
+	{
+		_address = targetAddress;
+	}
 private:
 	size_t _address;
 	char const * _data;
