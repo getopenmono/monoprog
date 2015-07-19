@@ -84,15 +84,15 @@ public:
 		{
 			case EnterBootLoader:
 			{
-				// Emulate the PSoC development board:
 				int data[8];
+				// Use the siliconId to tell which board is being emulated.
 				data[0] = siliconId & 0xFF;
 				data[1] = (siliconId >> 8) & 0xFF;
 				data[2] = (siliconId >> 16) & 0xFF;
 				data[3] = (siliconId >> 24) & 0xFF;
-				// siliconRev=0
+				// siliconRev = 0
 				data[4] = 0x00;
-				// bootloaderversion=0x01011e
+				// bootloaderversion = 0x01011E
 				data[5] = 0x1E;
 				data[6] = 0x01;
 				data[7] = 0x01;
@@ -101,6 +101,8 @@ public:
 			}
 			case GetFlashSize:
 			{
+				// Bootloader last flash row = 0x003C
+				// Last flash row = 0x00FF
 				int data[] = {0x3C,0x00,0xFF,0x00};
 				fillBuffer(buffer,data,sizeof(data)/sizeof(data[0]));
 				break;

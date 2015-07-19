@@ -1,12 +1,13 @@
-#include "ElfProgrammer.h"
-#include "ElfReader.h"
-#include "IProgrammer.h"
-#include "IDeviceCommunicator.h"
 #include "CombinedMemory.h"
-#include "OutputCollector.h"
 #include "cybtldr_api.h"
 #include "cybtldr_command.h"
 #include "elfio.hpp"
+#include "ElfProgrammer.h"
+#include "ElfReader.h"
+#include "IDeviceCommunicator.h"
+#include "IProgrammer.h"
+#include "MemorySection.h"
+#include "OutputCollector.h"
 #include <cmath>
 
 namespace {
@@ -23,6 +24,10 @@ size_t divideAndCeil (size_t dividend, size_t divisor)
 	return ceil(quotient);
 }
 
+/**
+ Each write of a flash row needs to be accompanied with configuration part,
+ which is what ConfiguredFlashRow accomplishes.
+ */
 struct ConfiguredFlashRow
 {
 	static const size_t BUFSIZE = 0x120;
@@ -108,7 +113,7 @@ bool ElfProgrammer::transferProgramToBooloader ()
 	// Memory must be alligned on Flash line.
 	size_t address = code->address();
 	if ((address & 0xFF) != 0x00) throw "Misaligned program";
-	size_t rows = max(divideAndCeil(code->size(),0x100),divideAndCeil(config->size(),0x20));
+	size_t rows = flashRowsToWrite();
 	for (size_t i = 0; i < rows; ++i)
 	{
 		ConfiguredFlashRow row(i,*code,*config);
@@ -129,7 +134,11 @@ bool ElfProgrammer::transferProgramToBooloader ()
 	// The empirical data we have only has short meta data sections, so we do
 	// not know what the layout would be if the meta data section was longer
 	// than one flash row.  Maybe the last 0x20 bytes are just zero padded?
-	if (metaRowSize > 0x100) return ProgrammerUnsupportedMetaData;
+	if (metaRowSize > 0x100)
+	{
+		output->error() << "Metadata problem";
+		return ProgrammerUnsupportedMetaData;
+	}
 	ConfiguredFlashRow row(metaRowStartAddress,*metadata);
 	OUTPUT(6) << "arrayId=" << row.arrayId;
 	OUTPUT(6) << "rowNum=" << row.rowNum;
@@ -142,6 +151,11 @@ bool ElfProgrammer::transferProgramToBooloader ()
 		if (CYRET_SUCCESS != CyBtldr_VerifyApplication()) return false;
 	}
 	return true;
+}
+
+size_t ElfProgrammer::flashRowsToWrite () const
+{
+	return max(divideAndCeil(code->size(),0x100),divideAndCeil(config->size(),0x20));
 }
 
 void ElfProgrammer::useInvertedSummationOfAllBytesChecksum ()
@@ -223,10 +237,131 @@ void ElfProgrammer::setupConfigMemory ()
 
 void ElfProgrammer::setupMetadataMemory ()
 {
-	metadata = std::unique_ptr<IMemorySection>(reader->getSection(".cyloadablemeta"));
-	if (! metadata)
+	size_t const METADATASIZE = 0x40;
+	// Debugging...
+	std::unique_ptr<IMemorySection> precomputed(reader->getSection(".cyloadablemeta"));
 	{
-		output->error() << "No section .cyloadablemeta in ELF program " << file.filePath().toStdString();
+		uint8_t buf[precomputed->size()];
+		for (size_t i = 0; i < precomputed->size(); ++i) buf[i] = (*precomputed)[precomputed->address()+i];
+		output->outputHex(0,(char*)buf,precomputed->size(),16);
+	}
+
+	/*
+	0f (chksum all app)
+	11 3d 00 00 (@cyreset)
+	3c 00 (last flash row)
+	00 00 (reserved)
+	e0 48 00 00 (app length)
+	00 00 00 (reserved)
+	00 (active app)
+	00 00 (verification status)
+	00 00 (app id)
+	00 00 (app version)
+	00 00 00 00 (app custom id)
+	00 00 00 00 (reserved)
+	*/
+	uint8_t * buffer = new uint8_t[METADATASIZE];
+	// Application checksum.
+	uint8_t checksum = getChecksumOfCode();
+	buffer[0x00] = checksum;
+
+	if (checksum != (*precomputed)[precomputed->address()])
+		output->error() << "Expected checksum " << (int) (*precomputed)[precomputed->address()] << " but got " << (int) checksum;
+
+	// Application start routine address.
+	uint32_t const entry = reader->getEntryAddress();
+	buffer[0x01] = entry & 0xFF;
+	buffer[0x02] = (entry >> 8) & 0xFF;
+	buffer[0x03] = (entry >> 16) & 0xFF;
+	buffer[0x04] = (entry >> 24) & 0xFF;
+
+	uint32_t const pEntry =
+		(*precomputed)[precomputed->address()+1] +
+		((*precomputed)[precomputed->address()+2] << 8) +
+		((*precomputed)[precomputed->address()+3] << 16) +
+		((*precomputed)[precomputed->address()+4] << 24);
+	if (entry != pEntry)
+		output->error() << "Expected entry " << pEntry << " but got " << entry;
+
+	// Last bootloader flash row.
+	buffer[0x05] = (entry >> 8) & 0xFF - 1;
+	buffer[0x06] = 0x00;
+
+	if (buffer[0x05] != (*precomputed)[precomputed->address()+5] || 0 != (*precomputed)[precomputed->address()+6])
+		output->error() << "Wrong last bootlader flash row";
+
+	// Reserved.
+	buffer[0x07] = 0x00;
+	buffer[0x08] = 0x00;
+	// Application length.
+	uint32_t const roundedAppSize = applicationAndConfigDataToWrite();
+	buffer[0x09] = roundedAppSize & 0xFF;
+	//buffer[0x09] = 0x60;
+	buffer[0x0A] = (roundedAppSize >> 8) & 0xFF;
+	buffer[0x0B] = (roundedAppSize >> 16) & 0xFF;
+	buffer[0x0C] = (roundedAppSize >> 24) & 0xFF;
+
+	// Reserved.
+	buffer[0x0D] = 0x00;
+	buffer[0x0E] = 0x00;
+	buffer[0x0F] = 0x00;
+	// Active application (we only support one).
+	buffer[0x10] = 0x00;
+	// Application verification status.
+	buffer[0x11] = 0x00;
+	// Bootloader application version.
+	buffer[0x12] = 0x00;
+	buffer[0x13] = 0x00;
+	// Bootloader ID.
+	buffer[0x14] = 0x00;
+	buffer[0x15] = 0x00;
+	// Application version.
+	buffer[0x16] = 0x00;
+	buffer[0x17] = 0x00;
+	// Application custom ID.
+	buffer[0x18] = 0x00;
+	buffer[0x19] = 0x00;
+	buffer[0x1A] = 0x00;
+	buffer[0x1B] = 0x00;
+
+	for (size_t i = 0x1C; i < METADATASIZE; ++i) buffer[i] = 0;
+
+	metadata = std::unique_ptr<IMemorySection>(new MemorySection(precomputed->address(),buffer,METADATASIZE));
+	output->outputHex(0,(char*)buffer,METADATASIZE,16);
+}
+
+uint8_t ElfProgrammer::getChecksumOfCode () const
+{
+	uint8_t checksum = 0;
+	size_t rows = flashRowsToWrite();
+	for (size_t i = 0; i < rows; ++i)
+	{
+		ConfiguredFlashRow row(i,*code,*config);
+		checksum += CyBtldr_ComputeChecksum((char unsigned *)row.buffer,row.BUFSIZE);
+	}
+	return checksum;
+}
+
+size_t ElfProgrammer::applicationAndConfigDataToWrite () const
+{
+	std::ios::fmtflags flags(output->getFlags());
+	// Each flash row holds 32 bytes config (in addition to text section).
+	size_t configFlashRows = config->size() >> 5;
+	OUTPUT(0) << "config flash rows = " << std::hex << configFlashRows;
+	//size_t configFlashRowBytes = (config->size() & 0x1F) + (configFlashRows << 8);
+	size_t configFlashRowBytes = ((config->size() & 0x1F) << 3) + (configFlashRows << 8);
+	OUTPUT(0) << "config flash bytes = " << std::hex << configFlashRowBytes;
+
+	OUTPUT(0) << "code flash bytes = " << std::hex << code->size();
+	output->setFlags(flags);
+
+	if (configFlashRowBytes > code->size())
+	{
+		return configFlashRowBytes;
+	}
+	else
+	{
+		return code->size();
 	}
 }
 

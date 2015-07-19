@@ -63,6 +63,13 @@ private slots:
 		QCOMPARE((*sut)[0x424b],(uint8_t)0x00);
 		QCOMPARE((*sut)[0x424d],(uint8_t)0x51);
 	}
+	void readerHasEntryPoint ()
+	{
+		// Arrange
+		ElfReader reader = setUpTestReader();
+		// Assert
+		QCOMPARE(reader.getEntryAddress(),(size_t)0x3D11);
+	}
 private:
 	ElfReader setUpTestReader ()
 	{

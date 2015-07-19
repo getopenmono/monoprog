@@ -2,6 +2,7 @@
 #define __IMEMORYSECTION_H
 
 #include <cstdint>
+#include <cstdlib>
 
 struct IMemorySection
 {

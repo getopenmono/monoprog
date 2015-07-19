@@ -94,6 +94,7 @@ void HidDevice::connectRealDev ()
 			hid_free_enumeration(device);
 			// 0 == Accept any serial number.
 			usbDevice = hid_open(CypressPsoc::VendorIdUsb,CypressPsoc::ProductIdUsb,0);
+			OUTPUT(2) << "Found Mono.";
 			return;
 		}
 		PROGRESS(1);

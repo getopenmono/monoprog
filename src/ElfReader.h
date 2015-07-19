@@ -13,6 +13,7 @@ class ElfReader
 {
 public:
 	ElfReader (ELFIO::elfio * elfio);
+	size_t getEntryAddress() const;
 	IMemorySection * getSection (std::string const & sectionName) const;
 private:
 	ELFIO::section const * findSection (std::string const & sectionName) const;

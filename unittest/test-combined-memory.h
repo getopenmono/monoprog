@@ -12,9 +12,9 @@ private slots:
 	{
 		// Arrange
 		uint8_t one[] = {0x01,0x02};
-		std::unique_ptr<IMemorySection> low(new MemorySection(0x100,(char const *)one,2));
+		std::unique_ptr<IMemorySection> low(new MemorySection(0x100,one,2));
 		uint8_t two[] = {0x04,0x05};
-		std::unique_ptr<IMemorySection> high(new MemorySection(0x103,(char const *)two,2));
+		std::unique_ptr<IMemorySection> high(new MemorySection(0x103,two,2));
 		uint8_t layout[] = {0x01,0x02,0x00,0x04,0x05};
 		// Act
 		std::unique_ptr<IMemorySection> sut(new CombinedMemory(std::move(high),std::move(low)));
@@ -31,9 +31,9 @@ private slots:
 	{
 		// Arrange
 		uint8_t one[] = {0x01,0x02};
-		std::unique_ptr<IMemorySection> low(new MemorySection(0x10000,(char const *)one,2));
+		std::unique_ptr<IMemorySection> low(new MemorySection(0x10000,one,2));
 		uint8_t two[] = {0x04,0x05};
-		std::unique_ptr<IMemorySection> high(new MemorySection(0x10001,(char const *)two,2));
+		std::unique_ptr<IMemorySection> high(new MemorySection(0x10001,two,2));
 		// Assert
 		QVERIFY_EXCEPTION_THROWN(new CombinedMemory(std::move(low),std::move(high)),char*);
 	}
@@ -41,9 +41,9 @@ private slots:
 	{
 		// Arrange
 		uint8_t one[] = {0x01,0x02};
-		std::unique_ptr<IMemorySection> low(new MemorySection(0x100,(char const *)one,2));
+		std::unique_ptr<IMemorySection> low(new MemorySection(0x100,one,2));
 		uint8_t two[] = {0x04,0x05};
-		std::unique_ptr<IMemorySection> high(new MemorySection(0x103,(char const *)two,2));
+		std::unique_ptr<IMemorySection> high(new MemorySection(0x103,two,2));
 		uint8_t layout[] = {0x01,0x02,0x00,0x04,0x05};
 		std::unique_ptr<IMemorySection> sut(new CombinedMemory(std::move(high),std::move(low)));
 		// Act

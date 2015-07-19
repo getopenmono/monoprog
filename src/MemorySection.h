@@ -1,12 +1,14 @@
 #if !defined(__MEMORYSECTION_H)
 #define __MEMORYSECTION_H
 #include "IMemorySection.h"
+#include <cstdint>
+#include <cstdlib>
 #include <sstream>
 
 class MemorySection : public IMemorySection
 {
 public:
-	MemorySection (size_t address_, char const * data_, size_t size_)
+	MemorySection (size_t address_, uint8_t const * data_, size_t size_)
 	: _address(address_)
 	, _data(data_)
 	, _size(size_)
@@ -35,7 +37,7 @@ public:
 	}
 private:
 	size_t _address;
-	char const * _data;
+	uint8_t const * _data;
 	size_t _size;
 };
 

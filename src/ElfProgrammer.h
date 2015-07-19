@@ -18,9 +18,12 @@ private:
 	void setupConfigMemory ();
 	void setupMetadataMemory ();
 	void setupSiliconId ();
+	size_t applicationAndConfigDataToWrite () const;
 	void useInvertedSummationOfAllBytesChecksum ();
 	ProgramStatus startBootloader ();
 	bool transferProgramToBooloader ();
+	size_t flashRowsToWrite () const;
+	uint8_t getChecksumOfCode () const;
 	std::unique_ptr<ElfReader> reader;
 	std::unique_ptr<IMemorySection> code;
 	std::unique_ptr<IMemorySection> config;

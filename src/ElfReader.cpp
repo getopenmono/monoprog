@@ -7,13 +7,20 @@ ElfReader::ElfReader (ELFIO::elfio * elfio_)
 {
 }
 
+size_t ElfReader::getEntryAddress() const
+{
+	return elfio->get_entry();
+}
+
 IMemorySection * ElfReader::getSection (std::string const & sectionName) const
 {
 	ELFIO::section const * section = findSection(sectionName);
 	if (0 == section) return 0;
 	return new MemorySection
 	(
-		section->get_address(),section->get_data(),section->get_size()
+		section->get_address(),
+		reinterpret_cast<uint8_t const *>(section->get_data()),
+		section->get_size()
 	);
 }
 
