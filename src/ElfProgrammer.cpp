@@ -138,7 +138,7 @@ bool ElfProgrammer::transferProgramToBooloader ()
 	if (metaRowSize > 0x100)
 	{
 		output->error() << "Metadata section too large";
-		return ProgrammerUnsupportedMetaData;
+		return false;
 	}
 	ConfiguredFlashRow row(metaRowStartAddress,*metadata);
 	OUTPUT(6) << "arrayId=" << row.arrayId;
