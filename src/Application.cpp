@@ -13,7 +13,6 @@
 #include <memory>
 
 #define OUTPUT(level) OUTPUTCOLLECTOR_LINE((*output),level)
-#define PROGRESS(level) OUTPUTCOLLECTOR_PROGRESS((*output),level)
 
 namespace {
 

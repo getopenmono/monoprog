@@ -38,9 +38,12 @@ Feature: Application will program Mono device
 		And the exit status should be 0
 
 		Examples:
-			| cyacd                | board    |
-			| ledBlinker.cyacd     | devboard |
-			| ledBlinkerSlow.CYACD | devboard |
+			| cyacd                 | board     |
+			| ledBlinker.cyacd      | devboard  |
+			| ledBlinkerSlow.CYACD  | devboard  |
+			| wayDisplayTest.cyacd  | monoboard |
+			| usbuart_test.cyacd    | monoboard |
+			| mono_i2c_test.cyacd   | monoboard |
 
 	Scenario Outline: Application will complain about missing connection when Mono not detected
 		When I run `monoprog --mock disconnected --program` on test data `<file>`
@@ -63,7 +66,10 @@ Feature: Application will program Mono device
 			| elf                 | board     |
 			| ledBlinker.elf      | devboard  |
 			| ledBlinkerSlow.ELF  | devboard  |
+			| wayDisplayTest.elf  | monoboard |
 			| wayDisplayTest2.elf | monoboard |
+			| usbuart_test.elf    | monoboard |
+			| mono_i2c_test.elf   | monoboard |
 
 	Scenario: Application will complain when silicon ID does not match program.
 		When I run `monoprog --mock devboard --program` on test data `wayDisplayTest2.elf`
