@@ -1,6 +1,8 @@
 #if !defined(__ELFPROGRAMMER_H)
 #define __ELFPROGRAMMER_H
 #include "ProgrammerBase.h"
+#include <cstdint>
+#include <memory>
 #include <QFileInfo>
 class ElfReader;
 struct IMemorySection;
