@@ -43,6 +43,8 @@ public:
 			case CMD_GET_FLASH_SIZE:
 			{
 				returnType = GetFlashSize;
+				std::vector<uint8_t> const & data = packet.getData();
+				arrayId = data[0];
 				return CYRET_SUCCESS;
 			}
 			case CMD_SEND_DATA:
@@ -101,9 +103,10 @@ public:
 			}
 			case GetFlashSize:
 			{
-				// Bootloader last flash row = 0x003C
-				// Last flash row = 0x00FF
-				int data[] = {0x3C,0x00,0xFF,0x00};
+				// Last flash row = 0x00FF.
+				int data[] = {0x00,0x00,0xFF,0x00};
+				// In flash array 0, the Bootloader occupies until 0x003B.
+				if (0 == arrayId) data[0] = 0x3C;
 				fillBuffer(buffer,data,sizeof(data)/sizeof(data[0]));
 				break;
 			}

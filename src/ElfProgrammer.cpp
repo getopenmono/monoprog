@@ -124,7 +124,7 @@ bool ElfProgrammer::transferProgramToBooloader ()
 		int res = row.writeToDevice();
 		if (CYRET_SUCCESS != res)
 		{
-			output->error() << "Programming row " << i << " failed: " << res;
+			output->error() << "Programming array " << row.arrayId << " row " << row.rowNum << " failed: " << res;
 			return false;
 		}
 		updater(row.arrayId,row.rowNum);
