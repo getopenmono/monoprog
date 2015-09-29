@@ -74,7 +74,7 @@ private:
 	ElfReader setUpTestReader ()
 	{
 		ELFIO::elfio * elfio = new ELFIO::elfio();
-		Q_ASSERT(elfio->load("../../fixtures/ledBlinker.elf"));
+		Q_ASSERT(elfio->load("../../features/data/ledBlinker.elf"));
 		return ElfReader(elfio);
 	}
 };
