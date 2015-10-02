@@ -29,6 +29,13 @@ To run acceptance tests, install [Aruba](https://github.com/cucumber/aruba) and
 
  - Optionally install Aruba: `$ gem install aruba`
 
+### XCode 7
+
+If you upgrade to XCode 7, you need to edit `Qt/5.3/clang_64/mkspecs/qdevice.pri` to
+contain the line
+
+     QMAKE_MAC_SDK = macosx10.11
+
 ## Debian/Ubuntu GNU/Linux
 
  - Install Qt from http://www.qt.io/download-open-source, see http://www.bogotobogo.com/Qt/Qt5_Install_Ubuntu_14_64bit.php and set your PATH to point to installed bin directory, like adding `export PATH="~/Qt5.4.2/5.4/gcc_64/bin:$PATH"` to your ~/.bachrc

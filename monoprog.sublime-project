@@ -28,8 +28,8 @@
 	[
 		{
 			"path": ".",
-			"folder_exclude_patterns": [".hglf",".idea","build","tmp"],
-			"file_exclude_patterns": ["*.sublime-workspace","*.user",".qmake.stash","*.iml"]
+			"folder_exclude_patterns": [".git","build","tmp"],
+			"file_exclude_patterns": ["*.sublime-workspace","*.user",".qmake.stash",".DS_Store"]
 		}
 	]
 }

@@ -70,6 +70,7 @@ Feature: Application will program Mono device
 			| wayDisplayTest2.elf | monoboard |
 			| usbuart_test.elf    | monoboard |
 			| mono_i2c_test.elf   | monoboard |
+			| mono_project.elf    | monoboard |
 
 	Scenario: Application will complain when silicon ID does not match program.
 		When I run `monoprog --mock devboard --program` on test data `wayDisplayTest2.elf`
