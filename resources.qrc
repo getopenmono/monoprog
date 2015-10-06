@@ -1,8 +1,9 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
-	<file>LICENSE.txt</file>
-	<file>elfio/COPYING</file>
-	<file>hidapi/LICENSE-bsd.txt</file>
-	<file>cybootloaderutils/LICENSE.txt</file>
-</qresource>
+<!DOCTYPE RCC>
+<RCC version="1.0">
+	<qresource>
+		<file>LICENSE.txt</file>
+		<file>elfio/COPYING</file>
+		<file>hidapi/LICENSE-bsd.txt</file>
+		<file>cybootloaderutils/LICENSE.txt</file>
+	</qresource>
 </RCC>

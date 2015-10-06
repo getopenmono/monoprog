@@ -2,34 +2,46 @@
 	"build_systems":
 	[
 		{
-			"name": "Monoprog",
-			"shell_cmd": "./compile.sh",
-			"path": "${project_path}",
-			"working_dir": "${project_path}",
 			"file_regex": "^../([^\n:]+):([0-9]+):([0-9]+): (.*)$",
-			"variants": [
+			"name": "Monoprog",
+			"path": "${project_path}",
+			"shell_cmd": "./compile.sh",
+			"variants":
+			[
 				{
 					"name": "Acceptance test",
 					"shell_cmd": "acceptancetest.sh"
 				},
 				{
-					"name": "Unit test",
 					"file_regex": "^./../../([^\n:]+):([0-9]+):([0-9]+): (.*)$",
+					"name": "Unit test",
 					"shell_cmd": "unittest.sh"
 				},
 				{
 					"name": "Clean",
 					"shell_cmd": "clean.sh"
 				}
-			]
+			],
+			"working_dir": "${project_path}"
 		}
 	],
 	"folders":
 	[
 		{
-			"path": ".",
-			"folder_exclude_patterns": [".git","build","tmp"],
-			"file_exclude_patterns": ["*.sublime-workspace","*.user",".qmake.stash",".DS_Store"]
+			"file_exclude_patterns":
+			[
+				"*.sublime-workspace",
+				"*.user",
+				".qmake.stash",
+				".DS_Store"
+			],
+			"folder_exclude_patterns":
+			[
+				".git",
+				"build",
+				"tmp"
+			],
+			"path": "."
 		}
 	]
 }
