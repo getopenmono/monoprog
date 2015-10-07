@@ -1,33 +1,33 @@
 #!/bin/sh
 
 APP=Monoprog
+EXE=monoprog
 BUILDDIR=../../build
-PACKAGEMAKER=/Applications/PackageMaker.app/Contents/MacOS/PackageMaker
+DISTDIR=$BUILDDIR/dist
 
-if [ -x "$PACKAGEMAKER" ]; then
-	"$PACKAGEMAKER" \
-		--doc "$APP.pmdoc" \
-		--version 1.1 \
-		--title "Mono Programmer" \
-		--out "$BUILDDIR/$APP.pkg"
-	exit 0
-else
-	echo $PACKAGEMAKER not found
+get_abs_filename() {
+	# $1 : relative filename
+	if [ -d "$(dirname "$1")" ]; then
+		echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+	else
+		echo "$1"
+	fi
+}
+
+if [ ! -d "$BUILDDIR" ]; then
+	echo $(get_abs_filename "$BUILDDIR") does not exist, nothing to package.
 	exit 1
 fi
 
-ROOTDIR=$BUILDDIR/$APP.app
-
-rm -rf "$ROOTDIR/"
-mkdir -p "$ROOTDIR/Contents/MacOS"
-mkdir -p "$ROOTDIR/Contents/Resources"
-cp "$BUILDDIR/monoprog" "$ROOTDIR/Contents/MacOS"
-cp ./Info.plist "$ROOTDIR/Contents"
+if [ -e "$DISTDIR" ]; then
+	rm -rf "$DISTDIR"
+fi
+mkdir -p "$DISTDIR/bin"
+cp "$BUILDDIR/$EXE" "$DISTDIR/bin/"
 
 pkgbuild \
-	--root "$ROOTDIR" \
-	--component-plist monoprog.plist \
-	--identifier com.openmono.pkg.monoprog \
-	--version 0.6.0 \
-	--install-location /usr/local/bin \
+	--root "$DISTDIR" \
+	--identifier com.openmono.monoprog \
+	--version 1 \
+	--install-location /usr/local \
 	"$BUILDDIR/$APP.pkg"
