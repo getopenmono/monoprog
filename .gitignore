@@ -2,3 +2,4 @@ build/*
 .qmake.stash
 *.sublime-workspace
 .DS_Store
+*.vcxproj*

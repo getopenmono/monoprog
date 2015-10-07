@@ -32,14 +32,14 @@
 			[
 				"*.sublime-workspace",
 				"*.user",
+				"*.vcxproj*",
 				".qmake.stash",
 				".DS_Store"
 			],
 			"folder_exclude_patterns":
 			[
 				".git",
-				"build",
-				"tmp"
+				"build"
 			],
 			"path": "."
 		}
