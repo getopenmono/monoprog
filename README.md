@@ -3,7 +3,7 @@
 This is a tool for transferring applications to a [Mono device](http://openmono.com).
 
 At the moments it works for
- - [X] OSX
+ - [X] OS X
  - [X] Linux
  - [X] Windows
 
@@ -23,7 +23,7 @@ To run acceptance tests, install [Aruba](https://github.com/cucumber/aruba) and
 
     $ ./acceptancetest.sh
 
-## OSX
+## OS X
 
  - [Install Qt](https://www.qt.io/download-open-source/) and set your PATH to point to the installed Qt bin directory, like adding `export PATH="~/Qt/5.4/clang_64/bin:$PATH"` to your ~/.bachrc
 
@@ -55,13 +55,13 @@ Monoprog has been tested with Visual Studio Express 2010.  It might work in othe
 - Add Qt (eg. C:\Qt\Qt5.5.0\5.5\msvc2010\bin) and msbuild (eg. C:\Windows\Microsoft.NET\Framework\v4.0.30319) to your PATH.
 
 Run
- 
+
     C:> setup.bat
     C:> unittest.bat
     C:> run.bat
 
 - Optionally install Ruby (2.0 for X86): http://dl.bintray.com/oneclick/rubyinstaller/rubyinstaller-2.0.0-p645.exe, add bin to PATH.  Aruba: gem install aruba.  Optionally, http://adoxa.altervista.org/ansicon.
- 
+
 Run
 
     C:> acceptancetest.bat
