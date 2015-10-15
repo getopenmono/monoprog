@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo "--> Setting up package build infrastructure"
+cat >> ~/.bashrc <<EOF
+DEBEMAIL="jp@openmono.com"
+DEBFULLNAME="Jens Peter Secher"
+export DEBEMAIL DEBFULLNAME
+EOF
