@@ -1,14 +1,11 @@
-Source: monoprog
-Section: devel
-Priority: optional
-Maintainer: Jens Peter Secher <jp@openmono.com>
-Build-Depends: debhelper (>=9)
-Standards-Version: 3.9.4
-Homepage: http://openmono.com
-
 Package: monoprog
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Architecture: amd64
+Maintainer: Jens Peter Secher <jp@openmono.com>
+Depends:
+Priority: optional
+Section: devel
+Version: 0.6
+Homepage: http://openmono.com
 Description: Programmer for the Open Mono IOT device
  Monoprog transfers an application from your computer onto your Mono
  device through an USB cable.
