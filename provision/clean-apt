@@ -4,6 +4,5 @@ echo "--> Clean APT database and upgrade"
 sudo apt-get clean
 sudo apt-key update
 sudo apt-get update
-#sudo apt-get remove apt-listchanges -y
 sudo apt-get check
 sudo apt-get upgrade -y

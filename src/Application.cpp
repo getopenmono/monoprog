@@ -257,7 +257,7 @@ StatusCode Application::displayLicenses ()
 		QFile textFile(":/"+license);
 		if (!textFile.open(QIODevice::ReadOnly|QIODevice::Text)) return UnknownError;
 		OUTPUT(0) << "----[" << license.toStdString() << "]----" << std::endl;
-		OUTPUT(0) << textFile.readAll().toStdString();
+		OUTPUT(0) << QString(textFile.readAll()).toStdString();
 	}
 	return Success;
 }
