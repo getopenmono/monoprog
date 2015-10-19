@@ -27,6 +27,7 @@ if [ -e "${DISTDIR}" ]; then
 fi
 
 mkdir -p "${PKGROOT}/DEBIAN"
+# Ideally we should use `dpkg --print-architecture` and generate 'control'.
 cp control "${PKGROOT}/DEBIAN/"
 
 BINDIR=${PKGROOT}/usr/bin

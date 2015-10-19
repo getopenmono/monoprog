@@ -1,9 +1,21 @@
+language: c++
+sudo: required
+services:
+  - docker
 branches:
   only:
     - master
     - stable
-language: c++
-before_install: echo Preparing installation...
-install: echo Installing dependencies...
-before_script: echo Preparing building...
-script: echo Building...
+compiler:
+  - gcc
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq qt5-default qttools5-dev-tools devscripts libusb-1.0-0-dev ruby-aruba
+  - qmake -version
+before_script:
+  - ./clean.sh
+  - ./setup.sh
+script:
+  - echo Building on $TRAVIS_OS_NAME...
+  - ./compile.sh
+  - ./unittest.sh

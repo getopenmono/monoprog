@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/getopenmono/monoprog.svg)](https://travis-ci.org/getopenmono/monoprog)
+
 # Mono device programmer
 
 This is a tool for transferring applications to a [Mono device](http://openmono.com).
