@@ -1,8 +1,9 @@
-#!/bin/sh
+#!/usr/bin/env bash
+source ../../configuration.sh
 
-BUILDDIR=../../build
 PACKAGE=monoprog
 EXE=monoprog
+BUILDDIR=../../$BUILDDIR
 DISTDIR=${BUILDDIR}/debpackage
 VERSION=0.6
 

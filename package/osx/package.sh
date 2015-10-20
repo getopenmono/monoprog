@@ -1,8 +1,9 @@
-#!/bin/sh
+#!/usr/bin/env bash
+source ../../configuration.sh
 
 APP=Monoprog
 EXE=monoprog
-BUILDDIR=../../build
+BUILDDIR=../../$BUILDDIR
 DISTDIR=$BUILDDIR/dist
 
 get_abs_filename() {

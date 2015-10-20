@@ -40,9 +40,7 @@ contain the line
 
 ## Debian/Ubuntu GNU/Linux
 
- - Install Qt from http://www.qt.io/download-open-source, see http://www.bogotobogo.com/Qt/Qt5_Install_Ubuntu_14_64bit.php and set your PATH to point to installed bin directory, like adding `export PATH="~/Qt5.4.2/5.4/gcc_64/bin:$PATH"` to your ~/.bachrc
-
- - Install libusb-1.0-0-dev
+ - Install qt5-default qttools5-dev-tools devscripts libusb-1.0-0-dev
 
  - Optionally install Aruba: `$ sudo aptitude install ruby-aruba`
 

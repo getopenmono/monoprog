@@ -1,3 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
+source configuration.sh
 
-rm -rf build
+rm -rf "$BUILDDIR"
