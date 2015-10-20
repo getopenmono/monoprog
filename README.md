@@ -56,12 +56,12 @@ Monoprog has been tested with Visual Studio Express 2010.  It might work in othe
 
 Run
 
-    C:> setup.bat
-    C:> unittest.bat
-    C:> run.bat
+    C:/> setup.bat
+    C:/> unittest.bat
+    C:/> run.bat
 
 - Optionally install Ruby (2.0 for X86): http://dl.bintray.com/oneclick/rubyinstaller/rubyinstaller-2.0.0-p645.exe, add bin to PATH.  Aruba: gem install aruba.  Optionally, http://adoxa.altervista.org/ansicon.
 
 Run
 
-    C:> acceptancetest.bat
+    C:/> acceptancetest.bat

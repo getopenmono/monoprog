@@ -5,7 +5,7 @@ Feature: Application can display help and license
 
 	Scenario: Application invoked with no arguments
 		When I run `monoprog`
-		Then the output should contain "Usage: monoprog"
+		Then the output should contain "Usage:"
 		And the exit status should be 1
 
 	Scenario Outline: Application invoked with help argument
