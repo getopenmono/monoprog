@@ -1,1 +1,3 @@
 set BUILDDIR=bin
+set RELEASEDIR=%BUILDDIR%\release
+set DEBUGDIR=%BUILDDIR%\debug

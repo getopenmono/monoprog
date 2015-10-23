@@ -25,17 +25,17 @@ HEADERS += src/MemorySection.h
 HEADERS += src/CombinedMemory.h
 
 windows {
-	Release:DESTDIR = $$(BUILDDIR)/release
-	Release:OBJECTS_DIR = $$(BUILDDIR)/release/.obj
-	Release:MOC_DIR = $$(BUILDDIR)/release/.moc
-	Release:RCC_DIR = $$(BUILDDIR)/release/.rcc
-	Release:UI_DIR = $$(BUILDDIR)/release/.ui
+	Release:DESTDIR = $$(RELEASEDIR)
+	Release:OBJECTS_DIR = $$(RELEASEDIR)/.obj
+	Release:MOC_DIR = $$(RELEASEDIR)/.moc
+	Release:RCC_DIR = $$(RELEASEDIR)/.rcc
+	Release:UI_DIR = $$(RELEASEDIR)/.ui
 
-	Debug:DESTDIR = $$(BUILDDIR)/debug
-	Debug:OBJECTS_DIR = $$(BUILDDIR)/debug/.obj
-	Debug:MOC_DIR = $$(BUILDDIR)/debug/.moc
-	Debug:RCC_DIR = $$(BUILDDIR)/debug/.rcc
-	Debug:UI_DIR = $$(BUILDDIR)/debug/.ui
+	Debug:DESTDIR = $$(DEBUGDIR)
+	Debug:OBJECTS_DIR = $$(DEBUGDIR)/.obj
+	Debug:MOC_DIR = $$(DEBUGDIR)/.moc
+	Debug:RCC_DIR = $$(DEBUGDIR)/.rcc
+	Debug:UI_DIR = $$(DEBUGDIR)/.ui
 }
 
 INCLUDEPATH += src

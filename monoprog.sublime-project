@@ -40,7 +40,8 @@
 			[
 				".git",
 				".vagrant",
-				"build"
+				"bin",
+				"tmp"
 			],
 			"path": "."
 		}
