@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 source ../../configuration.sh
 
-APP=Monoprog
+APP=Monoprog-v$VERSION-x64.pkg
 EXE=monoprog
 BUILDDIR=../../$BUILDDIR
+QTDIR=../../$QTDIR
 DISTDIR=$BUILDDIR/dist
 
 get_abs_filename() {
@@ -26,9 +27,11 @@ fi
 mkdir -p "$DISTDIR/bin"
 cp "$BUILDDIR/$EXE" "$DISTDIR/bin/"
 
+cp "$QTDIR/5.4/clang_64/lib/QtCore.framework/Versions/5/QtCore" "$DISTDIR/bin/"
+
 pkgbuild \
 	--root "$DISTDIR" \
 	--identifier com.openmono.monoprog \
 	--version 1 \
 	--install-location /usr/local \
-	"$BUILDDIR/$APP.pkg"
+	"$BUILDDIR/$APP"
