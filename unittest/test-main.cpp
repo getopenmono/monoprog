@@ -9,11 +9,11 @@ int main(int argc, char *argv[])
 	int failures = AutoTest::run(argc, argv);
 	if (failures == 0)
 	{
-    	qDebug() << "ALL TESTS PASSED";
+		qDebug() << "ALL TESTS PASSED";
 	}
 	else
 	{
-    	qDebug() << failures << " TESTS FAILED!";
+		qDebug() << failures << " TESTS FAILED!";
 	}
 	return failures;
 }
