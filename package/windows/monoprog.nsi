@@ -1,8 +1,8 @@
 !include "EnvVarUpdate.nsh"
 
 Name "Monoprog"
-# TODO: Find out how to use $%BUILDDIR% and $%RELEASEDIR%.
-OutFile "..\..\bin\MonoprogSetup.exe"
+# TODO: Find out how to use $%BUILDDIR%, $%RELEASEDIR% and %VERSION%.
+OutFile "..\..\bin\MonoprogSetup-v0.6.0-x86.exe"
 InstallDir "$PROGRAMFILES\OpenMono"
 
 Section "Install"
