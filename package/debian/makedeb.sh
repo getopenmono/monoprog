@@ -2,10 +2,8 @@
 source ../../configuration.sh
 
 PACKAGE=monoprog
-EXE=monoprog
 BUILDDIR=../../$BUILDDIR
 DISTDIR=${BUILDDIR}/debpackage
-VERSION=0.6
 
 PKGROOT=${DISTDIR}/${PACKAGE}_${VERSION}
 

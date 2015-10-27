@@ -2,7 +2,6 @@
 source ../../configuration.sh
 
 APP=Monoprog-v$VERSION-x64.pkg
-EXE=monoprog
 BUILDDIR=../../$BUILDDIR
 QTDIR=../../$QTDIR
 DISTDIR=$BUILDDIR/dist
