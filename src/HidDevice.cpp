@@ -31,14 +31,19 @@ HidDevice::~HidDevice ()
 
 int HidDevice::openConnection ()
 {
-	connectRealDev();
-	if (0 == usbDevice)
+	switch (connectRealDev())
 	{
-		output.error() << "Mono device not detected on USB ports.";
-		output.error() << "Make sure that Mono's bootloader is waiting for Host communication.";
-		return -1;
+		default:
+		case DeviceNotFound:
+			output.error() << "Mono device not detected on USB ports.";
+			output.error() << "Make sure that Mono's bootloader is waiting for Host communication.";
+			return -1;
+		case AccessDenied:
+			output.error() << "Could not get access to USB device, maybe you need to use sudo?";
+			return -1;
+		case ConnectedToDevice:
+			return CYRET_SUCCESS;
 	}
-	else return CYRET_SUCCESS;
 }
 
 int HidDevice::closeConnection ()
@@ -81,7 +86,7 @@ void HidDevice::progressUpdate (uint8_t arrayId, int unsigned short rowNr)
 	PROGRESS(1);
 }
 
-void HidDevice::connectRealDev ()
+HidDeviceStatus HidDevice::connectRealDev ()
 {
 	OUTPUT(2) << "Looking for Mono as a USB device.";
 	hid_device_info * device = 0;
@@ -92,10 +97,11 @@ void HidDevice::connectRealDev ()
 		if (0 != device)
 		{
 			hid_free_enumeration(device);
+			OUTPUT(2) << "Found Mono.";
 			// 0 == Accept any serial number.
 			usbDevice = hid_open(CypressPsoc::VendorIdUsb,CypressPsoc::ProductIdUsb,0);
-			OUTPUT(2) << "Found Mono.";
-			return;
+			if (0 == usbDevice) return AccessDenied;
+			return ConnectedToDevice;
 		}
 		PROGRESS(1);
 		// Poll in 100ms intervals.
@@ -106,6 +112,7 @@ void HidDevice::connectRealDev ()
 			usleep(100000);
 #		endif
 	}
+	return DeviceNotFound;
 }
 
 int unsigned HidDevice::getBufferSize ()

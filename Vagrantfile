@@ -15,4 +15,9 @@ Vagrant.configure(2) do |config|
     privileged: false
   # Avoid is-not-a-tty messages.
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+  config.vm.provider :virtualbox do |vb|
+    # Enable the VM's virtual USB controller & enable the virtual USB 2.0 controller.
+    # (You need to install VirtualBox Extension Pack for this to work)
+    vb.customize ["modifyvm", :id, "--usb", "on", "--usbehci", "on"]
+  end
 end

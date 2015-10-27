@@ -33,6 +33,10 @@ BINDIR=${PKGROOT}/usr/bin
 mkdir -p "${BINDIR}"
 cp "${BUILDDIR}/$EXE" "${BINDIR}/"
 
+UDEVDIR=${PKGROOT}/etc/udev/rules.d
+mkdir -p "${UDEVDIR}"
+cp etc-udev-rules.d-openmono.rules "${UDEVDIR}/openmono.rules"
+
 sudo chown -R root:root "${PKGROOT}"
 
 sudo dpkg-deb --build "${PKGROOT}"

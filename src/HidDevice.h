@@ -5,6 +5,8 @@
 #include "hidapi.h"
 #include <cstdint>
 
+namespace { enum HidDeviceStatus {DeviceNotFound,AccessDenied,ConnectedToDevice}; }
+
 class HidDevice : public IDeviceCommunicator
 {
 public:
@@ -18,7 +20,7 @@ public:
 	virtual ~HidDevice ();
 private:
 	OutputCollector & output;
-	void connectRealDev ();
+	HidDeviceStatus connectRealDev ();
 	hid_device * usbDevice;
 };
 
