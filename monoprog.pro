@@ -7,7 +7,7 @@ CONFIG += console
 CONFIG += warn_on
 CONFIG += c++11
 CONFIG += resources
-CONFIG -= app_bundle
+//CONFIG -= app_bundle
 
 TEMPLATE = app
 

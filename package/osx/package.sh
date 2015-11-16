@@ -3,7 +3,7 @@ source ../../configuration.sh
 
 APP=Monoprog-v$VERSION-x64.pkg
 BUILDDIR=../../$BUILDDIR
-QTDIR=../../$QTDIR
+QTDIR=../../$QTDIR/5.4/clang_64
 DISTDIR=$BUILDDIR/dist
 
 get_abs_filename() {
@@ -20,17 +20,21 @@ if [ ! -d "$BUILDDIR" ]; then
 	exit 1
 fi
 
+$QTDIR/bin/macdeployqt $BUILDDIR/$EXE.app -no-plugins
+
 if [ -e "$DISTDIR" ]; then
 	rm -rf "$DISTDIR"
 fi
-mkdir -p "$DISTDIR/bin"
-cp "$BUILDDIR/$EXE" "$DISTDIR/bin/"
 
-cp "$QTDIR/5.4/clang_64/lib/QtCore.framework/Versions/5/QtCore" "$DISTDIR/bin/"
+mkdir -p "$DISTDIR/Applications"
+cp -R "$BUILDDIR/$EXE.app" "$DISTDIR/Applications/"
+mkdir -p "$DISTDIR/usr/local/bin"
+ln -s "../../../Applications/$EXE.app/Contents/MacOS/$EXE" "$DISTDIR/usr/local/bin/$EXE"
 
 pkgbuild \
 	--root "$DISTDIR" \
 	--identifier com.openmono.monoprog \
 	--version 1 \
-	--install-location /usr/local \
+	--install-location / \
 	"$BUILDDIR/$APP"
+
