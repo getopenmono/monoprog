@@ -20,7 +20,11 @@ if [ ! -d "$BUILDDIR" ]; then
 	exit 1
 fi
 
-$QTDIR/bin/macdeployqt $BUILDDIR/$EXE.app -no-plugins
+if [ ! -x "$QTDIR/bin/macdeployqt" ]; then
+	echo "$QTDIR/bin/macdeployqt" does not exist, cannot create package.
+	exit 2
+fi
+"$QTDIR/bin/macdeployqt" "$BUILDDIR/$EXE.app" -no-plugins
 
 if [ -e "$DISTDIR" ]; then
 	rm -rf "$DISTDIR"
@@ -31,6 +35,10 @@ cp -R "$BUILDDIR/$EXE.app" "$DISTDIR/Applications/"
 mkdir -p "$DISTDIR/usr/local/bin"
 ln -s "../../../Applications/$EXE.app/Contents/MacOS/$EXE" "$DISTDIR/usr/local/bin/$EXE"
 
+if ! hash pkgbuild 2>/dev/null; then
+	echo pkgbuild does not exist, cannot create package.
+	exit 3
+fi
 pkgbuild \
 	--root "$DISTDIR" \
 	--identifier com.openmono.monoprog \

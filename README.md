@@ -4,10 +4,7 @@
 
 This is a tool for transferring applications to a [Mono device](http://openmono.com).
 
-At the moments it works for
- - [X] OS X
- - [X] Linux
- - [X] Windows
+At the moments it works for OS X, Debian/Ubuntu GNU/Linux, and Windows.
 
 To build Mono Programmer, you need Qt and various libraries, see architecture-specific sections below.
 
@@ -31,6 +28,14 @@ To run acceptance tests, install [Aruba](https://github.com/cucumber/aruba) and
 
  - Optionally install Aruba: `$ gem install aruba`
 
+To build an installer, run
+
+    $ ./compile.sh
+    $ cd pacakge/osx
+    $ ./package.sh
+
+which places a package in `bin/Monoprog-vX.Y.Z-x64.pkg`.
+
 ### XCode 7
 
 If you upgrade to XCode 7, you need to edit `Qt/5.3/clang_64/mkspecs/qdevice.pri` to
@@ -43,6 +48,14 @@ contain the line
  - Install qt5-default qttools5-dev-tools devscripts libusb-1.0-0-dev
 
  - Optionally install Aruba: `$ sudo aptitude install ruby-aruba`
+
+To build an installer, run
+
+    $ ./compile.sh
+    $ cd pacakge/debian
+    $ ./makedeb.sh
+
+which places a package in `bin/monoprog_X.Y.Z.deb`.
 
 ## Windows
 
@@ -65,3 +78,11 @@ Run
 Run
 
     C:/> acceptancetest.bat
+
+To build an installer install [NSIS](http://nsis.sourceforge.net/Download/) and run
+
+    $ ./compile.bat
+    $ cd pacakge/windows
+    $ makensis monoprog.nsi
+
+which places a package in `bin/MonoprogSetup-vX.Y.Z-X86.exe`.
