@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env bash
+source configuration.sh
 
-qmake CONFIG+=debug -o build/Makefile monoprog.pro && \
-qmake CONFIG+=debug -o build/unittest/Makefile unittests.pro
+qmake CONFIG+=debug -o "$BUILDDIR"/Makefile monoprog.pro && \
+qmake CONFIG+=debug -o "$BUILDDIR"/unittest/Makefile unittests.pro

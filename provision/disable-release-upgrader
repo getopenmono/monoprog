@@ -1,0 +1,4 @@
+#!/bin/bash -e
+
+echo "--> Disabling the release upgrader"
+sudo sed -i.bak 's/^Prompt=.*$/Prompt=never/' /etc/update-manager/release-upgrades

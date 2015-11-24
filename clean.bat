@@ -1,5 +1,7 @@
 @echo off
 
-del /s /q build
+call configuration.bat
+
+rmdir /s /q "%BUILDDIR%"
 del /q *.vcxproj *.vcxproj.filters *.sdf *.opensdf
-del /s /q ipch
+rmdir /s /q ipch

@@ -5,12 +5,12 @@ Feature: Application can display help and license
 
 	Scenario: Application invoked with no arguments
 		When I run `monoprog`
-		Then the output should contain "Usage: monoprog"
+		Then the output should contain "Usage:"
 		And the exit status should be 1
 
-	Scenario Outline: Application invoked with short help argument
+	Scenario Outline: Application invoked with help argument
 		When I run `monoprog <arg>`
-		Then the output should contain "Usage: monoprog"
+		Then the output should contain "Usage:"
 		And the exit status should be 0
 
 		Examples:
@@ -18,14 +18,14 @@ Feature: Application can display help and license
 			| -h     |
 			| --help |
 
-	Scenario Outline: Application invoked with long version argument
+	Scenario Outline: Application invoked with version argument
 		When I run `monoprog <arg>`
-		Then the output should contain "monoprog 0.6"
+		Then the output should contain "monoprog 0.7"
 		And the exit status should be 0
 
 		Examples:
 			| arg       |
-			| -v        |
+			| -V        |
 			| --version |
 
 	Scenario: Application can display licenses and versions of agregated software

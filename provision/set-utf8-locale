@@ -1,0 +1,12 @@
+#!/bin/bash -e
+
+LOCALE=en_US.UTF-8
+
+echo "--> Setup locale $LOCALE"
+sudo LOCALE=$LOCALE sh -c 'echo "LANG=$LOCALE\nLC_ALL=$LOCALE" > /etc/default/locale'
+export LANGUAGE="$LOCALE"
+export LANG="$LOCALE"
+export LC_ALL="$LOCALE"
+sudo locale-gen "$LOCALE"
+sudo update-locale LANG="$LOCALE"
+sudo dpkg-reconfigure locales

@@ -35,7 +35,10 @@ private slots:
 		uint8_t two[] = {0x04,0x05};
 		std::unique_ptr<IMemorySection> high(new MemorySection(0x10001,two,2));
 		// Assert
+#		if QT_VERSION >= 0x050300
+		// Only available from Qt 5.3.
 		QVERIFY_EXCEPTION_THROWN(new CombinedMemory(std::move(low),std::move(high)),char*);
+#		endif
 	}
 	void relocatingMemoryMovesBothSections ()
 	{

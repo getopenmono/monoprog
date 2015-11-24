@@ -7,7 +7,7 @@ CONFIG += console
 CONFIG += warn_on
 CONFIG += c++11
 CONFIG += resources
-CONFIG -= app_bundle
+//CONFIG -= app_bundle
 
 TEMPLATE = app
 
@@ -37,17 +37,19 @@ windows {
 	SOURCES += hidapi/windows/hid.c
 	LIBS += setupapi.lib
 
-	Release:DESTDIR = build/release
-	Release:OBJECTS_DIR = build/release/.obj
-	Release:MOC_DIR = build/release/.moc
-	Release:RCC_DIR = build/release/.rcc
-	Release:UI_DIR = build/release/.ui
+	QMAKE_CXXFLAGS_RELEASE = $$QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO
+	QMAKE_LFLAGS_RELEASE = $$QMAKE_LFLAGS_RELEASE_WITH_DEBUGINFO
+	Release:DESTDIR = $$(RELEASEDIR)
+	Release:OBJECTS_DIR = $$(RELEASEDIR)/.obj
+	Release:MOC_DIR = $$(RELEASEDIR)/.moc
+	Release:RCC_DIR = $$(RELEASEDIR)/.rcc
+	Release:UI_DIR = $$(RELEASEDIR)/.ui
 
-	Debug:DESTDIR = build/debug
-	Debug:OBJECTS_DIR = build/debug/.obj
-	Debug:MOC_DIR = build/debug/.moc
-	Debug:RCC_DIR = build/debug/.rcc
-	Debug:UI_DIR = build/debug/.ui
+	Debug:DESTDIR = $$(DEBUGDIR)
+	Debug:OBJECTS_DIR = $$(DEBUGDIR)/.obj
+	Debug:MOC_DIR = $$(DEBUGDIR)/.moc
+	Debug:RCC_DIR = $$(DEBUGDIR)/.rcc
+	Debug:UI_DIR = $$(DEBUGDIR)/.ui
 }
 
 HEADERS += cybootloaderutils/cybtldr_api.h

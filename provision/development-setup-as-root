@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+echo "--> Installing package build infrastructure"
+apt-get install -y \
+	libusb-1.0-0-dev \
+	qt5-default \
+	gdb-minimal \
+	ruby-aruba \
+	devscripts \
+	debhelper \
+	lintian

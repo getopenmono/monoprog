@@ -1,6 +1,7 @@
-#!/bin/sh
+#!/usr/bin/env bash
+source configuration.sh
 
 ./setup.sh && \
-cd build/unittest && \
+cd "$BUILDDIR"/unittest && \
 make && \
 ./unittests -silent $@

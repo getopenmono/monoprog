@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/usr/bin/env bash
+source ../../configuration.sh
 
-APP=Monoprog
-EXE=monoprog
-BUILDDIR=../../build
+APP=Monoprog-v$VERSION-x64.pkg
+BUILDDIR=../../$BUILDDIR
 DISTDIR=$BUILDDIR/dist
 
 get_abs_filename() {
@@ -19,15 +19,29 @@ if [ ! -d "$BUILDDIR" ]; then
 	exit 1
 fi
 
+if [ ! hash macdeployqt 2>/dev/null; then
+	echo macdeployqt does not exist, cannot create package.
+	exit 2
+fi
+macdeployqt "$BUILDDIR/$EXE.app" -no-plugins
+
 if [ -e "$DISTDIR" ]; then
 	rm -rf "$DISTDIR"
 fi
-mkdir -p "$DISTDIR/bin"
-cp "$BUILDDIR/$EXE" "$DISTDIR/bin/"
 
+mkdir -p "$DISTDIR/Applications"
+cp -R "$BUILDDIR/$EXE.app" "$DISTDIR/Applications/"
+mkdir -p "$DISTDIR/usr/local/bin"
+ln -s "../../../Applications/$EXE.app/Contents/MacOS/$EXE" "$DISTDIR/usr/local/bin/$EXE"
+
+if ! hash pkgbuild 2>/dev/null; then
+	echo pkgbuild does not exist, cannot create package.
+	exit 3
+fi
 pkgbuild \
 	--root "$DISTDIR" \
 	--identifier com.openmono.monoprog \
 	--version 1 \
-	--install-location /usr/local \
-	"$BUILDDIR/$APP.pkg"
+	--install-location / \
+	"$BUILDDIR/$APP"
+

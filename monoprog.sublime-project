@@ -39,7 +39,9 @@
 			"folder_exclude_patterns":
 			[
 				".git",
-				"build"
+				".vagrant",
+				"bin",
+				"tmp"
 			],
 			"path": "."
 		}

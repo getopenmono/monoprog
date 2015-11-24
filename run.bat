@@ -1,5 +1,7 @@
 @echo off
 
+call configuration.bat
+
 call setup.bat
 msbuild monoprog.vcxproj
-build\debug\monoprog.exe %*
+%BUILDDIR%\debug\monoprog.exe %*

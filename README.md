@@ -1,11 +1,10 @@
+[![Build Status](https://travis-ci.org/getopenmono/monoprog.svg)](https://travis-ci.org/getopenmono/monoprog)
+
 # Mono device programmer
 
 This is a tool for transferring applications to a [Mono device](http://openmono.com).
 
-At the moments it works for
- - [X] OS X
- - [X] Linux
- - [X] Windows
+At the moments it works for OS X, Debian/Ubuntu GNU/Linux, and Windows.
 
 To build Mono Programmer, you need Qt and various libraries, see architecture-specific sections below.
 
@@ -29,6 +28,14 @@ To run acceptance tests, install [Aruba](https://github.com/cucumber/aruba) and
 
  - Optionally install Aruba: `$ gem install aruba`
 
+To build an installer, run
+
+    $ ./compile.sh
+    $ cd pacakge/osx
+    $ ./package.sh
+
+which places a package in `bin/Monoprog-vX.Y.Z-x64.pkg`.
+
 ### XCode 7
 
 If you upgrade to XCode 7, you need to edit `Qt/5.3/clang_64/mkspecs/qdevice.pri` to
@@ -38,11 +45,17 @@ contain the line
 
 ## Debian/Ubuntu GNU/Linux
 
- - Install Qt from http://www.qt.io/download-open-source, see http://www.bogotobogo.com/Qt/Qt5_Install_Ubuntu_14_64bit.php and set your PATH to point to installed bin directory, like adding `export PATH="~/Qt5.4.2/5.4/gcc_64/bin:$PATH"` to your ~/.bachrc
-
- - Install libusb-1.0-0-dev
+ - Install qt5-default qttools5-dev-tools devscripts libusb-1.0-0-dev
 
  - Optionally install Aruba: `$ sudo aptitude install ruby-aruba`
+
+To build an installer, run
+
+    $ ./compile.sh
+    $ cd pacakge/debian
+    $ ./makedeb.sh
+
+which places a package in `bin/monoprog_X.Y.Z.deb`.
 
 ## Windows
 
@@ -56,12 +69,20 @@ Monoprog has been tested with Visual Studio Express 2010.  It might work in othe
 
 Run
 
-    C:> setup.bat
-    C:> unittest.bat
-    C:> run.bat
+    C:/> setup.bat
+    C:/> unittest.bat
+    C:/> run.bat
 
 - Optionally install Ruby (2.0 for X86): http://dl.bintray.com/oneclick/rubyinstaller/rubyinstaller-2.0.0-p645.exe, add bin to PATH.  Aruba: gem install aruba.  Optionally, http://adoxa.altervista.org/ansicon.
 
 Run
 
-    C:> acceptancetest.bat
+    C:/> acceptancetest.bat
+
+To build an installer install [NSIS](http://nsis.sourceforge.net/Download/) and run
+
+    $ ./compile.bat
+    $ cd pacakge/windows
+    $ makensis monoprog.nsi
+
+which places a package in `bin/MonoprogSetup-vX.Y.Z-X86.exe`.

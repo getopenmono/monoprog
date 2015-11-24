@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env bash
+source configuration.sh
 
 ./setup.sh && \
 ./compile.sh && \

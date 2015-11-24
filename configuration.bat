@@ -1,0 +1,4 @@
+set VERSION=0.7.0
+set BUILDDIR=bin
+set RELEASEDIR=%BUILDDIR%\release
+set DEBUGDIR=%BUILDDIR%\debug
