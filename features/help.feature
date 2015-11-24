@@ -20,12 +20,12 @@ Feature: Application can display help and license
 
 	Scenario Outline: Application invoked with version argument
 		When I run `monoprog <arg>`
-		Then the output should contain "monoprog 0.6"
+		Then the output should contain "monoprog 0.7"
 		And the exit status should be 0
 
 		Examples:
 			| arg       |
-			| -v        |
+			| -V        |
 			| --version |
 
 	Scenario: Application can display licenses and versions of agregated software

@@ -2,7 +2,8 @@
 
 Name "Monoprog"
 # TODO: Find out how to use $%BUILDDIR%, $%RELEASEDIR% and %VERSION%.
-OutFile "..\..\bin\MonoprogSetup-v0.6.0-x86.exe"
+# See: http://nsis.sourceforge.net/Docs/Chapter5.html#compenvvar
+OutFile "..\..\bin\MonoprogSetup-v0.7.0-x86.exe"
 InstallDir "$PROGRAMFILES\OpenMono"
 
 Section "Install"

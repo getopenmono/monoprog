@@ -32,8 +32,9 @@ private:
 	void setupOutput (std::ostream & out, std::ostream & error);
 	IDeviceCommunicator * createDeviceCommunication () const;
 	void setupApplicationConstants ();
-	StatusCode displayLicenses();
-	StatusCode detectDevice();
+	StatusCode displayVersion ();
+	StatusCode displayLicenses ();
+	StatusCode detectDevice ();
 	StatusCode programDevice (QString const & appPath);
 	bool fileExists (QFileInfo const & file);
 	QCoreApplication * qtApp;

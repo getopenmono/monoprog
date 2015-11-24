@@ -3,7 +3,6 @@ source ../../configuration.sh
 
 APP=Monoprog-v$VERSION-x64.pkg
 BUILDDIR=../../$BUILDDIR
-QTDIR=../../$QTDIR/5.4/clang_64
 DISTDIR=$BUILDDIR/dist
 
 get_abs_filename() {
@@ -20,11 +19,11 @@ if [ ! -d "$BUILDDIR" ]; then
 	exit 1
 fi
 
-if [ ! -x "$QTDIR/bin/macdeployqt" ]; then
-	echo "$QTDIR/bin/macdeployqt" does not exist, cannot create package.
+if [ ! hash macdeployqt 2>/dev/null; then
+	echo macdeployqt does not exist, cannot create package.
 	exit 2
 fi
-"$QTDIR/bin/macdeployqt" "$BUILDDIR/$EXE.app" -no-plugins
+macdeployqt "$BUILDDIR/$EXE.app" -no-plugins
 
 if [ -e "$DISTDIR" ]; then
 	rm -rf "$DISTDIR"

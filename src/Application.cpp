@@ -20,6 +20,7 @@ enum OperationMode
 {
 	Unknown,
 	UnknownMockDevice,
+	Version,
 	Detect,
 	License,
 	Program
@@ -42,11 +43,13 @@ public:
 	Arguments (QCoreApplication const & qtApp, OutputCollector & output)
 	{
 		setupStandardOptions();
+		setupVersionOptions();
 		setupLicenseOptions();
 		setupDetectOptions();
 		setupDeviceSimulationOptions();
 		setupProgramOptions();
 		setupDebugOptions();
+		setupSilentOptions();
 		parser.process(qtApp);
 		decideOperationModeFromArguments();
 		decideDeviceType(output);
@@ -70,7 +73,8 @@ public:
 	}
 	int getVerbosity () const
 	{
-		return parser.value(*debugOption).toInt();
+		if (parser.isSet(*silentOption)) return 0;
+		else return parser.value(*debugOption).toInt();
 	}
 	QCommandLineParser & getParser ()
 	{
@@ -84,8 +88,17 @@ private:
 			"Bootloadable Programmer for Mono board."
 		);
 		parser.addHelpOption();
-		parser.addVersionOption();
 	}
+	void setupVersionOptions ()
+	{
+		versionOption = new QCommandLineOption
+		(
+			QStringList() << "V" << "version",
+			"Displays version information."
+		);
+		parser.addOption(*versionOption);
+	}
+
 	void setupDeviceSimulationOptions ()
 	{
 		simulatedDeviceType = new QCommandLineOption
@@ -128,12 +141,21 @@ private:
 	{
 		debugOption = new QCommandLineOption
 		(
-			QStringList() << "verbose",
-			"Set output verbosity level (default is 0).",
+			QStringList() << "v" << "verbose",
+			"Set output verbosity level (default is 1).",
 			"level",
-			"0"
+			"1"
 		);
 		parser.addOption(*debugOption);
+	}
+	void setupSilentOptions()
+	{
+		silentOption = new QCommandLineOption
+		(
+			QStringList() << "q" << "quiet" << "silent",
+			"Set output verbosity level to 0."
+		);
+		parser.addOption(*silentOption);
 	}
 	void decideDeviceType (OutputCollector & output)
 	{
@@ -160,6 +182,7 @@ private:
 	void decideOperationModeFromArguments ()
 	{
 		if (parser.isSet(*licenseOption)) mode = License;
+		else if (parser.isSet(*versionOption)) mode = Version;
 		else if (parser.isSet(*detectOption)) mode = Detect;
 		else if (parser.isSet(*programOption))
 		{
@@ -169,11 +192,13 @@ private:
 		else mode = Unknown;
 	}
 	QCommandLineParser parser;
+	QCommandLineOption * versionOption;
 	QCommandLineOption * simulatedDeviceType;
 	QCommandLineOption * licenseOption;
 	QCommandLineOption * detectOption;
 	QCommandLineOption * programOption;
 	QCommandLineOption * debugOption;
+	QCommandLineOption * silentOption;
 	OperationMode mode;
 	DeviceType device;
 	QString programPath;
@@ -204,7 +229,7 @@ void Application::setupApplicationConstants ()
 {
 	QCoreApplication::setApplicationName("monoprog");
 	QCoreApplication::setOrganizationName("Monolit ApS");
-	QCoreApplication::setApplicationVersion("0.6");
+	QCoreApplication::setApplicationVersion("0.7.0");
 }
 
 IDeviceCommunicator * Application::createDeviceCommunication () const
@@ -231,6 +256,8 @@ StatusCode Application::run ()
 	{
 		case License:
 			return displayLicenses();
+		case Version:
+			return displayVersion();
 		case Detect:
 			return detectDevice();
 		case Program:
@@ -259,6 +286,12 @@ StatusCode Application::displayLicenses ()
 		OUTPUT(0) << "----[" << license.toStdString() << "]----" << std::endl;
 		OUTPUT(0) << QString(textFile.readAll()).toStdString();
 	}
+	return Success;
+}
+
+StatusCode Application::displayVersion ()
+{
+	OUTPUT(0) << "monoprog 0.7.0";
 	return Success;
 }
 
