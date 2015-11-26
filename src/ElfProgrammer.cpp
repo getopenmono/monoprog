@@ -255,7 +255,7 @@ void ElfProgrammer::setupMetadataMemory ()
 	buffer[0x03] = (entry >> 16) & 0xFF;
 	buffer[0x04] = (entry >> 24) & 0xFF;
 	// Last bootloader flash row.
-	buffer[0x05] = (entry >> 8) & 0xFF - 1;
+	buffer[0x05] = ((entry >> 8) & 0xFF) - 1;
 	buffer[0x06] = 0x00;
 	// Reserved.
 	buffer[0x07] = 0x00;
