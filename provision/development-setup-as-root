@@ -2,10 +2,11 @@
 
 echo "--> Installing package build infrastructure"
 apt-get install -y \
-	libusb-1.0-0-dev \
-	qt5-default \
-	gdb-minimal \
-	ruby-aruba \
-	devscripts \
 	debhelper \
-	lintian
+	devscripts \
+	gdb-minimal \
+	libusb-1.0-0-dev \
+	lintian \
+	qt5-default \
+	qttools5-dev-tools \
+	ruby-aruba

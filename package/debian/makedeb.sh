@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
-source ../../configuration.sh
-
-PACKAGE=monoprog
-BUILDDIR=../../$BUILDDIR
-DISTDIR=${BUILDDIR}/debpackage
-
-PKGROOT=${DISTDIR}/${PACKAGE}_${VERSION}
+source configuration.sh
 
 get_abs_filename() {
 	# $1 : relative filename
@@ -26,8 +20,9 @@ if [ -e "${DISTDIR}" ]; then
 fi
 
 mkdir -p "${PKGROOT}/DEBIAN"
-# Ideally we should use `dpkg --print-architecture` and generate 'control'.
-cp control "${PKGROOT}/DEBIAN/"
+
+DEBARCH=$(dpkg --print-architecture)
+sed -e "s;%DEBARCH%;$DEBARCH;g" -e "s;%VERSION%;$VERSION;g" control.template > "${PKGROOT}/DEBIAN/control"
 
 BINDIR=${PKGROOT}/usr/bin
 mkdir -p "${BINDIR}"

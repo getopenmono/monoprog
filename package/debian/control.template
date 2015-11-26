@@ -1,10 +1,10 @@
 Package: monoprog
-Architecture: amd64
+Architecture: %DEBARCH%
 Maintainer: Jens Peter Secher <jp@openmono.com>
 Depends: libusb-1.0-0, libqt5core5a | qtbase-abi-5-2-1
 Priority: optional
 Section: utils
-Version: 0.7.0
+Version: %VERSION%
 Homepage: http://openmono.com
 Description: Programmer for the Open Mono IOT device
  Monoprog transfers an application from your computer onto your Mono

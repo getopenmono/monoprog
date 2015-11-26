@@ -6,3 +6,7 @@ DEBEMAIL="jp@openmono.com"
 DEBFULLNAME="Jens Peter Secher"
 export DEBEMAIL DEBFULLNAME
 EOF
+
+echo "--> Setting up symlinks"
+cd $HOME
+[ -e monoprog ] || ln -s /vagrant monoprog
