@@ -1,16 +1,14 @@
 !include "EnvVarUpdate.nsh"
 
 Name "Monoprog"
-# TODO: Find out how to use $%BUILDDIR%, $%RELEASEDIR% and %VERSION%.
-# See: http://nsis.sourceforge.net/Docs/Chapter5.html#compenvvar
-OutFile "..\..\bin\MonoprogSetup-v0.7.0-x86.exe"
+OutFile "..\..\$%BUILDDIR%\MonoprogSetup-v$%VERSION%-x86.exe"
 InstallDir "$PROGRAMFILES\OpenMono"
 
 Section "Install"
 	SetOutPath $INSTDIR
-	File "..\..\bin\release\monoprog.exe"
+	File "..\..\$%BUILDDIR%\release\monoprog.exe"
 	# TODO: Find out how to extract the paths from environment.
-	File "C:\Qt\Qt5.5.0\5.5\msvc2010\bin\Qt5Core.dll"
+	File "$%QTRUNTIME%\bin\Qt5Core.dll"
 	File "C:\windows\system32\MSVCP100.DLL"
 	File "C:\windows\system32\MSVCR100.DLL"
 	${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR"

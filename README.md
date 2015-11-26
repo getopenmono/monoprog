@@ -79,10 +79,11 @@ Run
 
     C:/> acceptancetest.bat
 
-To build an installer install [NSIS](http://nsis.sourceforge.net/Download/) and run
+To build an installer, install [NSIS](http://nsis.sourceforge.net/Download/),
+edit `configuration.bat`, and run
 
-    $ ./compile.bat
-    $ cd pacakge/windows
-    $ makensis monoprog.nsi
+    C:/> compile.bat
+    C:/> cd package\windows
+    C:/> package.bat
 
 which places a package in `bin/MonoprogSetup-vX.Y.Z-X86.exe`.
