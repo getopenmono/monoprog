@@ -87,3 +87,11 @@ edit `configuration.bat`, and run
     C:/> package.bat
 
 which places a package in `bin/MonoprogSetup-vX.Y.Z-X86.exe`.
+
+## Debugging ELF files
+
+Run
+
+    $ g++ -I. elfio/elfdump.cpp -o bin/elfdump
+
+to get a binary `elfdump` that you can use to inspet ELF files.
