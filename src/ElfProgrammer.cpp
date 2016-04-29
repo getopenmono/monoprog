@@ -60,6 +60,10 @@ struct ConfiguredFlashRow
 	}
 	int writeToDevice () const
 	{
+		/* TODO: test whether it speeds up programming to do an extra VerifyRow
+		   and then only optionally do a ProgramRow.  This should be guarded by
+		   a command-line switch because VerifyRow only uses a simple checksum.
+		*/
 		int err = CyBtldr_ProgramRow(arrayId,rowNum,(uint8_t *)&buffer,BUFSIZE);
 		if (CYRET_SUCCESS != err) return err;
 		uint8_t checksum = CyBtldr_ComputeChecksum((uint8_t *)&buffer,BUFSIZE);
