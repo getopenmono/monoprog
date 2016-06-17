@@ -1,4 +1,4 @@
-set VERSION=0.7.0
+set VERSION=0.8.0
 set QTRUNTIME=C:\Qt\Qt5.5.0\5.5\msvc2010
 set BUILDDIR=bin
 set RELEASEDIR=%BUILDDIR%\release

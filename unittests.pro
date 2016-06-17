@@ -13,7 +13,6 @@ TEMPLATE = app
 SOURCES += unittest/test-main.cpp
 SOURCES += src/ElfReader.cpp
 HEADERS += unittest/autotest.h
-HEADERS += unittest/test-dummy.h
 HEADERS += unittest/test-output-collector.h
 HEADERS += unittest/test-bootloader-packet.h
 HEADERS += unittest/test-elf-reader.h

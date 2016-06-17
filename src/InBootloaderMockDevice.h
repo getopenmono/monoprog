@@ -1,5 +1,5 @@
-#if !defined(__CONNECTEDMOCKDEVICE_H)
-#define __CONNECTEDMOCKDEVICE_H
+#if !defined(__INBOOTLOADERMOCKDEVICE_H)
+#define __INBOOTLOADERMOCKDEVICE_H
 #include "IDeviceCommunicator.h"
 #include "BootloaderPacket.h"
 #include "OutputCollector.h"
@@ -9,11 +9,11 @@
 #define OUTPUT(level) OUTPUTCOLLECTOR_LINE((output),level)
 #define PROGRESS(level) OUTPUTCOLLECTOR_PROGRESS((output),level)
 
-class ConnectedMockDevice : public IDeviceCommunicator
+class InBootloaderMockDevice : public IDeviceCommunicator
 {
 public:
 	static int const BUFFERSIZE = 64;
-	ConnectedMockDevice (OutputCollector & output_, uint32_t siliconId_)
+	InBootloaderMockDevice (OutputCollector & output_, uint32_t siliconId_)
 	: output(output_)
 	, returnType(Unknown)
 	, siliconId(siliconId_)
@@ -150,7 +150,7 @@ public:
 	{
 		return BUFFERSIZE;
 	}
-	virtual ~ConnectedMockDevice ()
+	virtual ~InBootloaderMockDevice ()
 	{
 	}
 private:
@@ -224,4 +224,4 @@ private:
 #undef OUTPUT
 #undef PROGRESS
 
-#endif // __CONNECTEDMOCKDEVICE_H
+#endif // __INBOOTLOADERMOCKDEVICE_H

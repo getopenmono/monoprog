@@ -4,7 +4,7 @@
 #include "IProgrammer.h"
 #include "ProgrammerFactory.h"
 #include "NotConnectedMockDevice.h"
-#include "ConnectedMockDevice.h"
+#include "InBootloaderMockDevice.h"
 #include "OutputCollector.h"
 #include "cybtldr_utils.h"
 #include <QCommandLineParser>
@@ -104,7 +104,7 @@ private:
 		simulatedDeviceType = new QCommandLineOption
 		(
 			"mock",
-			"Simulates device to be in <type>.",
+			"Simulates device to be of <type>.",
 			"type"
 		);
 		parser.addOption(*simulatedDeviceType);
@@ -132,7 +132,7 @@ private:
 		programOption = new QCommandLineOption
 		(
 			QStringList() << "p" << "program",
-			"Transfers <app> to Mono.",
+			"Transfers <app> to a connected Mono.",
 			"app"
 		);
 		parser.addOption(*programOption);
@@ -229,7 +229,7 @@ void Application::setupApplicationConstants ()
 {
 	QCoreApplication::setApplicationName("monoprog");
 	QCoreApplication::setOrganizationName("Monolit ApS");
-	QCoreApplication::setApplicationVersion("0.7.0");
+	QCoreApplication::setApplicationVersion("0.8.0");
 }
 
 IDeviceCommunicator * Application::createDeviceCommunication () const
@@ -241,9 +241,9 @@ IDeviceCommunicator * Application::createDeviceCommunication () const
 		case MockNotConnected:
 			return new NotConnectedMockDevice(*output);
 		case MockDevBoard:
-			return new ConnectedMockDevice(*output,0x2e123069);
+			return new InBootloaderMockDevice(*output,0x2e123069);
 		case MockMonoBoard:
-			return new ConnectedMockDevice(*output,0x2e16a069);
+			return new InBootloaderMockDevice(*output,0x2e16a069);
 		default:
 			throw "Unknown device";
 			return 0;
@@ -291,7 +291,7 @@ StatusCode Application::displayLicenses ()
 
 StatusCode Application::displayVersion ()
 {
-	OUTPUT(0) << "monoprog 0.7.0";
+	OUTPUT(0) << "monoprog 0.8.0";
 	return Success;
 }
 

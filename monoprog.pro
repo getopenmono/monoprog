@@ -59,6 +59,7 @@ HEADERS += src/OutputCollector.h
 HEADERS += src/IDeviceCommunicator.h
 HEADERS += src/HidDevice.h
 HEADERS += src/NotConnectedMockDevice.h
+HEADERS += src/InBootloaderMockDevice.h
 HEADERS += src/Application.h
 HEADERS += src/IProgrammer.h
 HEADERS += src/ProgrammerFactory.h
