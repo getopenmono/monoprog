@@ -28,10 +28,14 @@ enum OperationMode
 
 enum DeviceType
 {
+	// The default: A real Mono.
 	RealDevice,
+	// Emulate different kinds of devices in various states.
 	MockNotConnected,
 	MockDevBoard,
-	MockMonoBoard
+	MockMonoBoard,
+	MockResponsiveApp,
+	MockUnresponsiveApp
 };
 
 } // namespace
@@ -164,6 +168,8 @@ private:
 		else if (type == deviceType.at(0)) device = MockNotConnected;
 		else if (type == deviceType.at(1)) device = MockDevBoard;
 		else if (type == deviceType.at(2)) device = MockMonoBoard;
+		else if (type == deviceType.at(3)) device = MockResponsiveApp;
+		else if (type == deviceType.at(4)) device = MockUnresponsiveApp;
 		else
 		{
 			device = MockNotConnected;
@@ -208,6 +214,8 @@ QStringList Arguments::deviceType = QStringList()
 	<< "disconnected" // 0
 	<< "devboard" // 1
 	<< "monoboard" // 2
+	<< "responsive" // 3
+	<< "unresponsive" // 4
 	;
 
 Application::Application (QCoreApplication * qtApp_, std::ostream & out, std::ostream & error)
@@ -244,6 +252,8 @@ IDeviceCommunicator * Application::createDeviceCommunication () const
 			return new InBootloaderMockDevice(*output,0x2e123069);
 		case MockMonoBoard:
 			return new InBootloaderMockDevice(*output,0x2e16a069);
+		case MockResponsiveApp:
+		case MockUnresponsiveApp:
 		default:
 			throw "Unknown device";
 			return 0;

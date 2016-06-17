@@ -10,7 +10,7 @@ public:
 	: code(0)
 	{
 		size_t i = 0;
-		// See PSoC "Bootloader and Bootloadable" (Cypress 001-92648).
+		// See PSoC "Bootloader and Bootloadable" (Cypress 002-09794).
 		// First byte must be 0x01.
 		if (size <= i || packet[i] != 0x01) return;
 		++i;
