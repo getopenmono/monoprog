@@ -17,6 +17,8 @@ public:
 	virtual int readData (uint8_t * buffer, int bytesToRead);
 	virtual void progressUpdate (uint8_t arrayId, int unsigned short rowNr);
 	virtual int unsigned getBufferSize ();
+	virtual SerialStatus serialOpen ();
+	virtual SerialStatus serialSendReset ();
 	virtual ~HidDevice ();
 private:
 	OutputCollector & output;

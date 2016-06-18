@@ -1,18 +1,18 @@
-#if !defined(__NOTCONNECTEDMOCKDEVICE_H)
-#define __NOTCONNECTEDMOCKDEVICE_H
+#if !defined(__UNRESPONSIVEAPPMOCKDEVICE_H)
+#define __UNRESPONSIVEAPPMOCKDEVICE_H
 #include "IDeviceCommunicator.h"
 #include "OutputCollector.h"
 #include "cybtldr_api.h"
 
 #define OUTPUT(level) OUTPUTCOLLECTOR_LINE((output),level)
 
-class NotConnectedMockDevice : public IDeviceCommunicator
+class UnresponsiveAppMockDevice : public IDeviceCommunicator
 {
 public:
-	NotConnectedMockDevice (OutputCollector & output_)
+	UnresponsiveAppMockDevice (OutputCollector & output_)
 	: output(output_)
 	{
-		OUTPUT(1) << "Using connected mock device.";
+		OUTPUT(1) << "Using connected but unresponsive mock device.";
 	}
 	virtual int openConnection ()
 	{
@@ -46,7 +46,7 @@ public:
 	{
 		return NoSerialDetected;
 	}
-	virtual ~NotConnectedMockDevice ()
+	virtual ~UnresponsiveAppMockDevice ()
 	{
 	}
 private:
@@ -55,4 +55,4 @@ private:
 
 #undef OUTPUT
 
-#endif // __NOTCONNECTEDMOCKDEVICE_H
+#endif // __UNRESPONSIVEAPPMOCKDEVICE_H

@@ -1,16 +1,18 @@
 #include "Application.h"
-#include "IDeviceCommunicator.h"
-#include "HidDevice.h"
-#include "IProgrammer.h"
-#include "ProgrammerFactory.h"
-#include "NotConnectedMockDevice.h"
-#include "InBootloaderMockDevice.h"
-#include "OutputCollector.h"
 #include "cybtldr_utils.h"
+#include "HidDevice.h"
+#include "IDeviceCommunicator.h"
+#include "InBootloaderMockDevice.h"
+#include "IProgrammer.h"
+#include "NotConnectedMockDevice.h"
+#include "OutputCollector.h"
+#include "ProgrammerFactory.h"
+#include "ResponsiveAppMockDevice.h"
+#include "UnresponsiveAppMockDevice.h"
+#include <memory>
 #include <QCommandLineParser>
 #include <QFile>
 #include <QFileInfo>
-#include <memory>
 
 #define OUTPUT(level) OUTPUTCOLLECTOR_LINE((*output),level)
 
@@ -36,6 +38,12 @@ enum DeviceType
 	MockMonoBoard,
 	MockResponsiveApp,
 	MockUnresponsiveApp
+};
+
+enum SiliconId
+{
+	DevBoard = 0x2e123069,
+	MonoBoard = 0x2e16a069
 };
 
 } // namespace
@@ -249,11 +257,13 @@ IDeviceCommunicator * Application::createDeviceCommunication () const
 		case MockNotConnected:
 			return new NotConnectedMockDevice(*output);
 		case MockDevBoard:
-			return new InBootloaderMockDevice(*output,0x2e123069);
+			return new InBootloaderMockDevice(*output,DevBoard);
 		case MockMonoBoard:
-			return new InBootloaderMockDevice(*output,0x2e16a069);
+			return new InBootloaderMockDevice(*output,MonoBoard);
 		case MockResponsiveApp:
+			return new ResponsiveAppMockDevice(*output,MonoBoard);
 		case MockUnresponsiveApp:
+			return new UnresponsiveAppMockDevice(*output);
 		default:
 			throw "Unknown device";
 			return 0;
@@ -319,15 +329,29 @@ StatusCode Application::programDevice (QString const & appPath)
 {
 	QFileInfo file(appPath);
 	if (!fileExists(file)) return FileDoesNotExist;
-	std::unique_ptr<IProgrammer> programmer
-	(
-		ProgrammerFactory::createProgrammer(file,createDeviceCommunication())
-	);
+	std::unique_ptr<IDeviceCommunicator> psocDevice(createDeviceCommunication());
+	// TODO:
+	if (SerialDetected == psocDevice->serialOpen())
+	{
+		OUTPUT(1) << "Resetting Mono device to go to bootloader";
+		if (SerialResetSent != psocDevice->serialSendReset())
+		{
+			return CouldNotResetMono;
+		}
+		// TODO: wait for bootloader?
+	}
+	IProgrammer * programmer = ProgrammerFactory::createProgrammer(file,psocDevice.release());
 	if (!programmer)
 	{
 		output->error() << "Unknown program type: " << file.suffix().toStdString();
 		return ProgramTypeNotRecognised;
 	}
+	return programDeviceInBootloader(appPath,programmer);
+}
+
+StatusCode Application::programDeviceInBootloader (QString const & appPath, IProgrammer * programmer_)
+{
+	std::unique_ptr<IProgrammer> programmer(programmer_);
 	programmer->setOutput(output);
 	std::string const filePath = appPath.toStdString();
 	char const * path = filePath.c_str();
@@ -337,10 +361,10 @@ StatusCode Application::programDevice (QString const & appPath)
 		case ProgrammerSuccess:
 			return Success;
 		case ProgrammerCorruptProgram:
-			output->error() << "Corrupt program " << file.filePath().toStdString();
+			output->error() << "Corrupt program " << appPath.toStdString();
 			return ProgrammingDeviceFailed;
 		case ProgrammerUnsupportedMetaData:
-			output->error() << "Metadata section too large in  " << file.filePath().toStdString();
+			output->error() << "Metadata section too large in  " << appPath.toStdString();
 			return ProgrammingDeviceFailed;
 		case ProgrammerNoConnectionToMonoDevice:
 			output->error() << "No connection to Mono device.";
@@ -357,14 +381,16 @@ StatusCode Application::programDevice (QString const & appPath)
 StatusCode Application::detectDevice ()
 {
 	std::unique_ptr<IDeviceCommunicator> psocDevice(createDeviceCommunication());
-	if (CYRET_SUCCESS != psocDevice->openConnection())
+	if (SerialDetected == psocDevice->serialOpen())
 	{
-		return NoConnectionToMonoDevice;
+		OUTPUT(0) << "Mono device running app detected.";
+		return Success;
 	}
-	else
+	if (CYRET_SUCCESS == psocDevice->openConnection())
 	{
-		OUTPUT(0) << "Mono device detected.";
+		OUTPUT(0) << "Mono device in bootloader detected.";
 		psocDevice->closeConnection();
 		return Success;
 	}
+	return NoConnectionToMonoDevice;
 }

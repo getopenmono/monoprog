@@ -150,9 +150,19 @@ public:
 	{
 		return BUFFERSIZE;
 	}
+	virtual SerialStatus serialOpen ()
+	{
+		return NoSerialDetected;
+	}
+	virtual SerialStatus serialSendReset ()
+	{
+		return NoSerialDetected;
+	}
 	virtual ~InBootloaderMockDevice ()
 	{
 	}
+protected:
+ 	OutputCollector & output;
 private:
 	void fillBuffer (uint8_t * buffer, int const * data, size_t size)
 	{
@@ -204,7 +214,6 @@ private:
 		rowNr = 0;
 		dataReceived.clear();
 	}
- 	OutputCollector & output;
 	enum ReturnType
 	{
 		EnterBootLoader,

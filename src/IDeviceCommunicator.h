@@ -1,8 +1,17 @@
 #if !defined(__IDEVICECOMMUNICATOR_H)
 #define __IDEVICECOMMUNICATOR_H
 
+enum SerialStatus
+{
+	SerialDetected,
+	NoSerialDetected,
+	SerialResetSent,
+};
+
 struct IDeviceCommunicator
 {
+	virtual SerialStatus serialOpen () = 0;
+	virtual SerialStatus serialSendReset () = 0;
 	virtual int openConnection () = 0;
 	virtual int closeConnection () = 0;
 	virtual int writeData (char unsigned * data, int bytesToWrite) = 0;

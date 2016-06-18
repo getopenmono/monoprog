@@ -39,7 +39,7 @@ int HidDevice::openConnection ()
 			output.error() << "Make sure that Mono's bootloader is waiting for Host communication.";
 			return -1;
 		case AccessDenied:
-			output.error() << "Could not get access to USB device, maybe you need to use sudo?";
+			output.error() << "Could not get access to USB device, maybe you need to be administrator?";
 			return -1;
 		case ConnectedToDevice:
 			return CYRET_SUCCESS;
@@ -60,10 +60,7 @@ int HidDevice::writeData (uint8_t * data, int bytesToWrite)
 	uint8_t buffer [CypressPsoc::BufferSize+1];
 	// The first byte needs to be zero, do not know why.
 	buffer[0] = 0;
-	for (int i = 0; i < bytesToWrite; ++i)
-	{
-		buffer[i+1] = data[i];
-	}
+	for (int i = 0; i < bytesToWrite; ++i) buffer[i+1] = data[i];
 	int result = hid_write(usbDevice,buffer,bytesToWrite+1);
 	// Allow for hid_write() on Windows to write more than what is needed.
 	if (bytesToWrite+1 <= result) return CYRET_SUCCESS;
@@ -106,7 +103,6 @@ HidDeviceStatus HidDevice::connectRealDev ()
 		PROGRESS(1);
 		// Poll in 100ms intervals.
 #		if defined(WIN32)
-			//SetLastError(0);
 			Sleep(100);
 #		else
 			usleep(100000);
@@ -118,4 +114,16 @@ HidDeviceStatus HidDevice::connectRealDev ()
 int unsigned HidDevice::getBufferSize ()
 {
 	return CypressPsoc::BufferSize;
+}
+
+SerialStatus HidDevice::serialOpen ()
+{
+	// TODO:
+	return NoSerialDetected;
+}
+
+SerialStatus HidDevice::serialSendReset ()
+{
+	// TODO:
+	return NoSerialDetected;
 }

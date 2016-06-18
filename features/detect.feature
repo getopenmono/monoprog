@@ -15,11 +15,19 @@ Feature: Application will detect Mono device
 
 	Scenario Outline: Should detect resposive device
 		When I run `monoprog --detect --mock <board>`
-		Then the output should contain "Mono device detected"
+		Then the output should contain "Mono device in bootloader detected"
 		And the exit status should be 0
 
 		Examples:
 			| board        |
 			| devboard     |
 			| monoboard    |
+
+	Scenario Outline: Should detect resposive device
+		When I run `monoprog --detect --mock <board>`
+		Then the output should contain "Mono device running app detected"
+		And the exit status should be 0
+
+		Examples:
+			| board        |
 			| responsive   |

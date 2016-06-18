@@ -1,6 +1,7 @@
 #if !defined(__APPLICATION_H)
 #define __APPLICATION_H
 #include <ostream>
+struct IProgrammer;
 
 enum StatusCode
 {
@@ -12,6 +13,7 @@ enum StatusCode
 	ProgramTypeNotRecognised = 5,
 	MissingElfSection = 6,
 	WrongSiliconId = 7,
+	CouldNotResetMono = 8,
 	UnknownError
 };
 
@@ -36,6 +38,7 @@ private:
 	StatusCode displayLicenses ();
 	StatusCode detectDevice ();
 	StatusCode programDevice (QString const & appPath);
+	StatusCode programDeviceInBootloader (QString const & appPath, IProgrammer * programmer);
 	bool fileExists (QFileInfo const & file);
 	QCoreApplication * qtApp;
 	Arguments * arguments;
