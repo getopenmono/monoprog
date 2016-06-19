@@ -5,7 +5,7 @@ enum SerialStatus
 {
 	SerialDetected,
 	NoSerialDetected,
-	SerialResetSent,
+	SerialResetSent
 };
 
 struct IDeviceCommunicator

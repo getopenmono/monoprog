@@ -330,15 +330,13 @@ StatusCode Application::programDevice (QString const & appPath)
 	QFileInfo file(appPath);
 	if (!fileExists(file)) return FileDoesNotExist;
 	std::unique_ptr<IDeviceCommunicator> psocDevice(createDeviceCommunication());
-	// TODO:
 	if (SerialDetected == psocDevice->serialOpen())
 	{
-		OUTPUT(1) << "Resetting Mono device to go to bootloader";
+		OUTPUT(1) << "Resetting Mono device to start bootloader";
 		if (SerialResetSent != psocDevice->serialSendReset())
 		{
 			return CouldNotResetMono;
 		}
-		// TODO: wait for bootloader?
 	}
 	IProgrammer * programmer = ProgrammerFactory::createProgrammer(file,psocDevice.release());
 	if (!programmer)
