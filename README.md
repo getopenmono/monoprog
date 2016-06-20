@@ -6,9 +6,23 @@ This is a tool for transferring applications to a [Mono device](http://openmono.
 
 At the moments it works for OS X, Debian/Ubuntu GNU/Linux, and Windows.
 
-To build Mono Programmer, you need Qt and various libraries, see architecture-specific sections below.
+To build Mono Programmer, you need Qt and various libraries, see architecture-specific sections below, but in general, you need to go the `src` directory and run the following scripts
 
-Then
+- `setup`
+- `compile`
+- `run`
+
+To run unit tests,
+
+- `unittest`
+
+To run acceptance tests, install [Aruba](https://github.com/cucumber/aruba) and
+
+- `acceptancetest`
+
+## OS X
+
+[Install Qt](https://www.qt.io/download-open-source/) and set your PATH to point to the installed Qt bin directory, like adding `export PATH="~/Qt/5.4/clang_64/bin:$PATH"` to your ~/.bachrc.  Then go to `src` and run
 
     $ ./setup.sh
     $ ./compile.sh
@@ -18,23 +32,9 @@ To run unit tests,
 
     $ ./unittest.sh
 
-To run acceptance tests, install [Aruba](https://github.com/cucumber/aruba) and
+To run acceptance tests, install [Aruba](https://github.com/cucumber/aruba) by `$ gem install aruba` and
 
     $ ./acceptancetest.sh
-
-## OS X
-
- - [Install Qt](https://www.qt.io/download-open-source/) and set your PATH to point to the installed Qt bin directory, like adding `export PATH="~/Qt/5.4/clang_64/bin:$PATH"` to your ~/.bachrc
-
- - Optionally install Aruba: `$ gem install aruba`
-
-To build an installer, run
-
-    $ ./compile.sh
-    $ cd pacakge/osx
-    $ ./package.sh
-
-which places a package in `bin/Monoprog-vX.Y.Z-x64.pkg`.
 
 ### XCode 7
 
@@ -43,19 +43,23 @@ contain the line
 
      QMAKE_MAC_SDK = macosx10.11
 
-## Debian/Ubuntu GNU/Linux
 
- - Install qt5-default qttools5-dev-tools devscripts libusb-1.0-0-dev
+## Debian/Ubuntu
 
- - Optionally install Aruba: `$ sudo aptitude install ruby-aruba`
+Install the packages listed in `provision/development-setup-as-root`.  Then go to `src` and run
 
-To build an installer, run
-
+    $ ./setup.sh
     $ ./compile.sh
-    $ cd pacakge/debian
-    $ ./makedeb.sh
+    $ ./run.sh
 
-which places a package in `bin/monoprog_X.Y.Z.deb`.
+To run unit tests,
+
+    $ ./unittest.sh
+
+To run acceptance tests, run
+
+    $ ./acceptancetest.sh
+
 
 ## Windows
 
@@ -79,14 +83,6 @@ Run
 
     C:/> acceptancetest.bat
 
-To build an installer, install [NSIS](http://nsis.sourceforge.net/Download/),
-edit `configuration.bat`, and run
-
-    C:/> compile.bat
-    C:/> cd package\windows
-    C:/> package.bat
-
-which places a package in `bin/MonoprogSetup-vX.Y.Z-X86.exe`.
 
 ## Debugging ELF files
 
@@ -95,3 +91,8 @@ Run
     $ g++ -I. elfio/elfdump.cpp -o bin/elfdump
 
 to get a binary `elfdump` that you can use to inspet ELF files.
+
+
+## Releases
+
+To create an installer package, see [RELEASE.md](RELEASE.md).

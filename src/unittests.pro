@@ -11,17 +11,17 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += unittest/test-main.cpp
-SOURCES += src/ElfReader.cpp
+SOURCES += ElfReader.cpp
 HEADERS += unittest/autotest.h
 HEADERS += unittest/test-output-collector.h
 HEADERS += unittest/test-bootloader-packet.h
 HEADERS += unittest/test-elf-reader.h
 HEADERS += unittest/test-combined-memory.h
-HEADERS += src/OutputCollector.h
-HEADERS += src/ElfReader.h
-HEADERS += src/IMemorySection.h
-HEADERS += src/MemorySection.h
-HEADERS += src/CombinedMemory.h
+HEADERS += OutputCollector.h
+HEADERS += ElfReader.h
+HEADERS += IMemorySection.h
+HEADERS += MemorySection.h
+HEADERS += CombinedMemory.h
 
 windows {
 	QMAKE_CXXFLAGS_RELEASE = $$QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO
@@ -39,6 +39,6 @@ windows {
 	Debug:UI_DIR = $$(DEBUGDIR)/.ui
 }
 
-INCLUDEPATH += src
+INCLUDEPATH += .
 INCLUDEPATH += cybootloaderutils
 INCLUDEPATH += elfio
