@@ -1,4 +1,4 @@
-bin/*
+src/bin
 .qmake.stash
 *.sublime-workspace
 .DS_Store

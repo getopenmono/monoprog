@@ -10,7 +10,7 @@ To build an installer, run
     $ cd package/osx
     $ ./package.sh
 
-which places a package in `../bin/Monoprog-vX.Y.Z-x64.pkg`.
+which places a package in `bin/Monoprog-vX.Y.Z-x64.pkg`.
 
 ## Debian/Ubuntu
 
@@ -23,7 +23,7 @@ Build the installer in a virtual machine by using [Vagrant](http://vagrantup.com
     $ cd package/debian
     $ ./makedeb.sh
 
-which places a package in `../bin/debpackage/monoprog_X.Y.Z.deb`.
+which places a package in `bin/debpackage/monoprog_X.Y.Z.deb`.
 
 
 ## Windows

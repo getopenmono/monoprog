@@ -1,7 +1,7 @@
 require 'aruba/cucumber'
 
 # Have to be the same as in '../../configuration.sh'
-BUILDDIR = '../bin'
+BUILDDIR = 'bin'
 EXE = 'monoprog'
 # (TODO: Use something from
 # http://stackoverflow.com/questions/1197224/source-shell-script-into-environment-within-a-ruby-script
@@ -28,8 +28,6 @@ module ArubaOverrides
     else
       # The application will be located in the build directory.
       mybin = "#{File.expand_path(File.join(PROJECT_ROOT,BUILDDIR))}"
-      puts "---> #{PROJECT_ROOT} <---"
-      puts "---> #{mybin} <---"
       ENV['PATH'] = "#{mybin}:#{ENV['PATH']}"
       "#{cmd}"
     end

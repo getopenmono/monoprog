@@ -2,7 +2,7 @@ Vagrant.configure(2) do |config|
   config.vm.define "debian", primary: true do |debian|
     debian.vm.box = "ubuntu/trusty64"
     debian.vm.synced_folder "src", "/home/vagrant/src", rsync__exclude: [
-      ".DS_Store"]
+      ".DS_Store", "bin"]
     debian.vm.provision "shell",
       path: "provision/clean-apt"
     debian.vm.provision "shell",
