@@ -161,12 +161,12 @@ bool HidDevice::matchingSerialDetectedAndSetup (QSerialPortInfo const & serialPo
 	QString const blankString = "N/A";
 	QString description = serialPortInfo.description();
 	QString manufacturer = serialPortInfo.manufacturer();
-	QString serialNumber = serialPortInfo.serialNumber();
+	//QString serialNumber = serialPortInfo.serialNumber();
 	OUTPUT(3) << "Port: " << serialPortInfo.portName().toStdString();
 	OUTPUT(3) << "Location: " << serialPortInfo.systemLocation().toStdString();
 	OUTPUT(3) << "Description: " << (!description.isEmpty() ? description : blankString).toStdString();
 	OUTPUT(3) << "Manufacturer: " << (!manufacturer.isEmpty() ? manufacturer : blankString).toStdString();
-	OUTPUT(3) << "Serial number: " << (!serialNumber.isEmpty() ? serialNumber : blankString).toStdString();
+	//OUTPUT(3) << "Serial number: " << (!serialNumber.isEmpty() ? serialNumber : blankString).toStdString();
 	OUTPUT(3) << "Vendor Identifier: " << (serialPortInfo.hasVendorIdentifier() ? QByteArray::number(serialPortInfo.vendorIdentifier(), 16) : blankString).toStdString();
 	OUTPUT(3) << "Product Identifier: " << (serialPortInfo.hasProductIdentifier() ? QByteArray::number(serialPortInfo.productIdentifier(), 16) : blankString).toStdString();
 	OUTPUT(3) << "Busy: " << (serialPortInfo.isBusy() ? "Yes" : "No");

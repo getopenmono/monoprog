@@ -6,7 +6,9 @@ apt-get install -y \
 	devscripts \
 	gdb-minimal \
 	libusb-1.0-0-dev \
+	libudev-dev \
 	lintian \
 	qt5-default \
 	qttools5-dev-tools \
+	libqt5serialport5-dev \
 	ruby-aruba
