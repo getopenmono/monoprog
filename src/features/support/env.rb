@@ -27,7 +27,10 @@ module ArubaOverrides
       "#{cmd}"
     else
       # The application will be located in the build directory.
-      ENV['PATH'] = "#{File.join(PROJECT_ROOT,BUILDDIR)}:#{ENV['PATH']}"
+      mybin = "#{File.expand_path(File.join(PROJECT_ROOT,BUILDDIR))}"
+      puts "---> #{PROJECT_ROOT} <---"
+      puts "---> #{mybin} <---"
+      ENV['PATH'] = "#{mybin}:#{ENV['PATH']}"
       "#{cmd}"
     end
   end

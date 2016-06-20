@@ -18,7 +18,6 @@ before_script:
   - ./setup.sh
 script:
   - echo Building on $TRAVIS_OS_NAME...
-  - cd src
   - ./compile.sh
   - ./unittest.sh
   - ./acceptancetest.sh
