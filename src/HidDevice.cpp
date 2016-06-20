@@ -45,7 +45,6 @@ int HidDevice::openConnection ()
 		default:
 		case DeviceNotFound:
 			output.error() << "Mono device not detected on USB ports.";
-			output.error() << "Make sure that Mono's bootloader is waiting for Host communication.";
 			return -1;
 		case AccessDenied:
 			output.error() << "Could not get access to USB device, maybe you need to be administrator?";
@@ -129,8 +128,8 @@ SerialStatus HidDevice::serialOpen ()
 {
 	QList<QSerialPortInfo> const serialPortInfos = QSerialPortInfo::availablePorts();
 	OUTPUT(3) << "Total number of ports available: " << serialPortInfos.count();
-	for (QSerialPortInfo const & serialPortInfo : serialPortInfos)
-		if (matchingSerialDetectedAndSetup(serialPortInfo))
+	for (QList<QSerialPortInfo>::const_iterator i = serialPortInfos.begin(); i != serialPortInfos.end(); ++i)
+		if (matchingSerialDetectedAndSetup(*i))
 			return SerialDetected;
 	return NoSerialDetected;
 }
