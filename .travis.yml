@@ -13,8 +13,8 @@ before_install:
 before_script:
   - gem install cucumber
   - gem install aruba
-  - ./clean.sh
   - cd src
+  - ./clean.sh
   - ./setup.sh
 script:
   - echo Building on $TRAVIS_OS_NAME...
