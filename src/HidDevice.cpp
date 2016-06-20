@@ -1,5 +1,6 @@
 #include "HidDevice.h"
 #include "cybtldr_api.h"
+#include <QtSerialPort/QSerialPort>
 #if defined(WIN32)
 #	include <windows.h>
 #else
@@ -9,10 +10,18 @@
 #define OUTPUT(level) OUTPUTCOLLECTOR_LINE((output),level)
 #define PROGRESS(level) OUTPUTCOLLECTOR_PROGRESS((output),level)
 
+namespace {
+enum Ids
+{
+	VendorId = 0x4b4,
+	ProductIdSerial = 0xf232,
+};
+} // namespace
+
 namespace CypressPsoc {
 enum Settings
 {
-	VendorIdUsb = 0x4b4,
+	VendorIdUsb = VendorId,
 	ProductIdUsb = 0xb71d,
 	//SerialNumber = 0x7fc120606400,
 	BufferSize = 0x40
@@ -118,12 +127,59 @@ int unsigned HidDevice::getBufferSize ()
 
 SerialStatus HidDevice::serialOpen ()
 {
-	// TODO:
+	QList<QSerialPortInfo> const serialPortInfos = QSerialPortInfo::availablePorts();
+	OUTPUT(3) << "Total number of ports available: " << serialPortInfos.count();
+	for (QSerialPortInfo const & serialPortInfo : serialPortInfos)
+		if (matchingSerialDetectedAndSetup(serialPortInfo))
+			return SerialDetected;
 	return NoSerialDetected;
 }
 
 SerialStatus HidDevice::serialSendReset ()
 {
-	// TODO:
-	return NoSerialDetected;
+	if (serialDevice.length() == 0) return NoSerialDetected;
+	QSerialPort serialPort;
+	serialPort.setPortName(serialDevice);
+	if (! serialPort.open(QIODevice::WriteOnly))
+	{
+		output.error() << "Failed to open serial port " << serialDevice.toStdString()
+			<< ": " << serialPort.errorString().toStdString();
+		return SerialPortCouldNotBeOpened;
+	}
+	serialPort.setDataTerminalReady(true);
+#	if defined(WIN32)
+		Sleep(100);
+#	else
+		usleep(100000);
+#	endif
+	serialPort.setDataTerminalReady(false);
+	serialPort.close();
+	return SerialResetSent;
+}
+
+bool HidDevice::matchingSerialDetectedAndSetup (QSerialPortInfo const & serialPortInfo)
+{
+	QString const blankString = "N/A";
+	QString description = serialPortInfo.description();
+	QString manufacturer = serialPortInfo.manufacturer();
+	QString serialNumber = serialPortInfo.serialNumber();
+	OUTPUT(3) << "Port: " << serialPortInfo.portName().toStdString();
+	OUTPUT(3) << "Location: " << serialPortInfo.systemLocation().toStdString();
+	OUTPUT(3) << "Description: " << (!description.isEmpty() ? description : blankString).toStdString();
+	OUTPUT(3) << "Manufacturer: " << (!manufacturer.isEmpty() ? manufacturer : blankString).toStdString();
+	OUTPUT(3) << "Serial number: " << (!serialNumber.isEmpty() ? serialNumber : blankString).toStdString();
+	OUTPUT(3) << "Vendor Identifier: " << (serialPortInfo.hasVendorIdentifier() ? QByteArray::number(serialPortInfo.vendorIdentifier(), 16) : blankString).toStdString();
+	OUTPUT(3) << "Product Identifier: " << (serialPortInfo.hasProductIdentifier() ? QByteArray::number(serialPortInfo.productIdentifier(), 16) : blankString).toStdString();
+	OUTPUT(3) << "Busy: " << (serialPortInfo.isBusy() ? "Yes" : "No");
+	if (serialPortInfo.hasVendorIdentifier() && serialPortInfo.hasProductIdentifier())
+	{
+		if (serialPortInfo.vendorIdentifier() == VendorId &&
+			serialPortInfo.productIdentifier() == ProductIdSerial)
+		{
+			OUTPUT(2) << "Mono detected on serial bus.";
+			serialDevice = serialPortInfo.systemLocation();
+			return true;
+		}
+	}
+	return false;
 }

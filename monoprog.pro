@@ -1,4 +1,5 @@
 QT += core
+QT += serialport
 QT -= gui
 
 TARGET = monoprog
@@ -7,7 +8,6 @@ CONFIG += console
 CONFIG += warn_on
 CONFIG += c++11
 CONFIG += resources
-//CONFIG -= app_bundle
 
 TEMPLATE = app
 

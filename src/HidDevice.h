@@ -4,6 +4,7 @@
 #include "OutputCollector.h"
 #include "hidapi.h"
 #include <cstdint>
+#include <QtSerialPort/QSerialPortInfo>
 
 namespace { enum HidDeviceStatus {DeviceNotFound,AccessDenied,ConnectedToDevice}; }
 
@@ -23,7 +24,9 @@ public:
 private:
 	OutputCollector & output;
 	HidDeviceStatus connectRealDev ();
+	bool matchingSerialDetectedAndSetup (QSerialPortInfo const & serialPortInfo);
 	hid_device * usbDevice;
+	QString serialDevice;
 };
 
 #endif // __HIDDEVICE_H

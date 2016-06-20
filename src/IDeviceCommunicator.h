@@ -5,6 +5,7 @@ enum SerialStatus
 {
 	SerialDetected,
 	NoSerialDetected,
+	SerialPortCouldNotBeOpened,
 	SerialResetSent
 };
 
