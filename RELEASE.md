@@ -31,7 +31,7 @@ which places a package in `bin/debpackage/monoprog_X.Y.Z.deb`.
 {TODO: Vagrant setup}
 
 To build an installer, install [NSIS](http://nsis.sourceforge.net/Download/),
-edit `configuration.bat`, and run
+add `C:\Program Files\NSIS` to PATH, edit `configuration.bat`, and run
 
     C:/> compile.bat
     C:/> cd package\windows

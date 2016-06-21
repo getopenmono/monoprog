@@ -22,4 +22,8 @@ Vagrant.configure(2) do |config|
       vb.customize ["modifyvm", :id, "--usb", "on", "--usbehci", "on"]
     end
   end
+  config.vm.define "windows", autostart: false do |windows|
+    windows.vm.box = "opentable/win-7-professional-i386-nocm"
+    #windows.vm.communicator = "winrm"
+  end
 end
