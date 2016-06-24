@@ -24,6 +24,7 @@ Section "Install"
 	File "..\..\$%BUILDDIR%\release\monoprog.exe"
 	# TODO: Find out how to extract the paths from environment.
 	File "$%QTRUNTIME%\bin\Qt5Core.dll"
+    File "$%QTRUNTIME%\bin\Qt5SerialPort.dll"
 	File "C:\windows\system32\MSVCP100.DLL"
 	File "C:\windows\system32\MSVCR100.DLL"
 	File "USBUART_cdc.inf"
