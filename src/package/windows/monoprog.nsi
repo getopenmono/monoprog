@@ -1,7 +1,7 @@
 !include "EnvVarUpdate.nsh"
 
 Name "Monoprog"
-OutFile "..\..\$%BUILDDIR%\MonoprogSetup-v$%VERSION%-x86.exe"
+OutFile "$%BUILDDIR%\MonoprogSetup-v$%VERSION%-x86.exe"
 InstallDir "$PROGRAMFILES\OpenMono"
 
 ;Request application privileges for Windows Vista, 7, 8
@@ -21,10 +21,8 @@ FunctionEnd
 
 Section "Install"
 	SetOutPath $INSTDIR
-	File "..\..\$%BUILDDIR%\release\monoprog.exe"
-	# TODO: Find out how to extract the paths from environment.
-	File "$%QTRUNTIME%\bin\Qt5Core.dll"
-    File "$%QTRUNTIME%\bin\Qt5SerialPort.dll"
+	File "$%RELEASEDIR%\monoprog.exe"
+	File "$%RELEASEDIR%\*.dll"
 	File "C:\windows\system32\MSVCP100.DLL"
 	File "C:\windows\system32\MSVCR100.DLL"
 	File "USBUART_cdc.inf"
@@ -40,11 +38,8 @@ SectionEnd
 
 Section "Uninstall"
 	${un.EnvVarUpdate} $0 "PATH" "R" "HKLM" "$INSTDIR"
-	Delete "$INSTDIR\Qt5Core.dll"
-	Delete "$INSTDIR\MSVCP100.DLL"
-	Delete "$INSTDIR\MSVCR100.DLL"
-	Delete "$INSTDIR\monoprog.exe"
-	Delete "$INSTDIR\Uninstall.exe"
-	Delete "$INSTDIR\USBUART_cdc.inf"
+	Delete "$INSTDIR\*.dll"
+	Delete "$INSTDIR\*.exe"
+	Delete "$INSTDIR\*.inf"
 	RMDir "$INSTDIR"
 SectionEnd

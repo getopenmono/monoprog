@@ -24,6 +24,5 @@ Vagrant.configure(2) do |config|
   end
   config.vm.define "windows", autostart: false do |windows|
     windows.vm.box = "opentable/win-7-professional-i386-nocm"
-    #windows.vm.communicator = "winrm"
   end
 end
