@@ -19,6 +19,7 @@ Build the installer in a virtual machine by using [Vagrant](http://vagrantup.com
     $ vagrant up debian
     $ vagrant ssh
     $ cd src
+    $ ./clean.sh
     $ ./compile.sh
     $ cd package/debian
     $ ./makedeb.sh
