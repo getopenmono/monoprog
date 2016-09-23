@@ -7,7 +7,7 @@
 
 #define OUTPUT(level) OUTPUTCOLLECTOR_LINE((output),level)
 
-namespace { enum DeviceState { AppRunning, ResetNotYetDetected, Bootloader }; }
+enum DeviceState { AppRunning, ResetNotYetDetected, Bootloader };
 
 class ResponsiveAppMockDevice : public InBootloaderMockDevice
 {

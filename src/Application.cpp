@@ -245,7 +245,7 @@ void Application::setupApplicationConstants ()
 {
 	QCoreApplication::setApplicationName("monoprog");
 	QCoreApplication::setOrganizationName("Monolit ApS");
-	QCoreApplication::setApplicationVersion("0.8.0");
+	QCoreApplication::setApplicationVersion("0.8.1");
 }
 
 IDeviceCommunicator * Application::createDeviceCommunication () const
@@ -311,7 +311,7 @@ StatusCode Application::displayLicenses ()
 
 StatusCode Application::displayVersion ()
 {
-	OUTPUT(0) << "monoprog 0.8.0";
+	OUTPUT(0) << "monoprog 0.8.1";
 	return Success;
 }
 
