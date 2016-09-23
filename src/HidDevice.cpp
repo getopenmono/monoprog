@@ -95,7 +95,7 @@ HidDeviceStatus HidDevice::connectRealDev ()
 {
 	OUTPUT(2) << "Looking for Mono as a USB device.";
 	hid_device_info * device = 0;
-	int tries = 10;
+	int tries = 50;
 	while (tries-- >= 0)
 	{
 		device = hid_enumerate(CypressPsoc::VendorIdUsb,CypressPsoc::ProductIdUsb);
