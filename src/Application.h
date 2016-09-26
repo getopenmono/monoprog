@@ -37,11 +37,13 @@ private:
 	StatusCode displayVersion ();
 	StatusCode displayLicenses ();
 	StatusCode detectDevice ();
+	StatusCode echoSerial ();
 	StatusCode programDevice (QString const & appPath);
 	StatusCode programDeviceInBootloader (QString const & appPath, IProgrammer * programmer);
 	bool fileExists (QFileInfo const & file);
 	QCoreApplication * qtApp;
 	Arguments * arguments;
+	std::ostream & stdout;
 	OutputCollector * output;
 };
 

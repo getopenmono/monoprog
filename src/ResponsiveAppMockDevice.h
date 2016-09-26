@@ -1,15 +1,16 @@
 #if !defined(__RESPONSIVEAPPMOCKDEVICE_H)
 #define __RESPONSIVEAPPMOCKDEVICE_H
 #include "cybtldr_api.h"
-#include "IDeviceCommunicator.h"
 #include "InBootloaderMockDevice.h"
 #include "OutputCollector.h"
+#include <cstring>
 
 #define OUTPUT(level) OUTPUTCOLLECTOR_LINE((output),level)
 
 enum DeviceState { AppRunning, ResetNotYetDetected, Bootloader };
 
-class ResponsiveAppMockDevice : public InBootloaderMockDevice
+class ResponsiveAppMockDevice:
+	public InBootloaderMockDevice
 {
 public:
 	ResponsiveAppMockDevice (OutputCollector & output_, uint32_t siliconId_)
@@ -53,7 +54,7 @@ public:
 	{
 		return 64;
 	}
-	virtual SerialStatus serialOpen ()
+	virtual SerialStatus detect ()
 	{
 		if (Bootloader != state)
 		{
@@ -62,7 +63,7 @@ public:
 		}
 		return NoSerialDetected;
 	}
-	virtual SerialStatus serialSendReset ()
+	virtual SerialStatus sendReset ()
 	{
 		if (AppRunning == state)
 		{
@@ -75,6 +76,12 @@ public:
 			return SerialResetSent;
 		}
 		return NoSerialDetected;
+	}
+	virtual int getAvailableBytes (uint8_t * buffer, size_t size)
+	{
+		static char const * data = "Test data from Mono...\r\n";
+		strncpy((char*)buffer,data,size);
+		return strlen(data);
 	}
 	virtual ~ResponsiveAppMockDevice ()
 	{

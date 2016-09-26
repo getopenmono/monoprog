@@ -19,6 +19,7 @@ SOURCES += ProgrammerBase.cpp
 SOURCES += CyacdProgrammer.cpp
 SOURCES += ElfProgrammer.cpp
 SOURCES += ElfReader.cpp
+SOURCES += sleep.cpp
 SOURCES += cybootloaderutils/cybtldr_api.c
 SOURCES += cybootloaderutils/cybtldr_api2.c
 SOURCES += cybootloaderutils/cybtldr_command.c

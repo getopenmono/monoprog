@@ -6,7 +6,8 @@
 
 #define OUTPUT(level) OUTPUTCOLLECTOR_LINE((output),level)
 
-class NotConnectedMockDevice : public IDeviceCommunicator
+class NotConnectedMockDevice:
+	public IDeviceCommunicator
 {
 public:
 	NotConnectedMockDevice (OutputCollector & output_)
@@ -38,13 +39,17 @@ public:
 	{
 		return 64;
 	}
-	virtual SerialStatus serialOpen ()
+	virtual SerialStatus detect ()
 	{
 		return NoSerialDetected;
 	}
-	virtual SerialStatus serialSendReset ()
+	virtual SerialStatus sendReset ()
 	{
 		return NoSerialDetected;
+	}
+	virtual int getAvailableBytes (uint8_t *, size_t)
+	{
+		return -1;
 	}
 	virtual ~NotConnectedMockDevice ()
 	{

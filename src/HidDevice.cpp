@@ -1,11 +1,7 @@
 #include "HidDevice.h"
 #include "cybtldr_api.h"
+#include "sleep.h"
 #include <QtSerialPort/QSerialPort>
-#if defined(WIN32)
-#	include <windows.h>
-#else
-#	include <unistd.h>
-#endif
 
 #define OUTPUT(level) OUTPUTCOLLECTOR_LINE((output),level)
 #define PROGRESS(level) OUTPUTCOLLECTOR_PROGRESS((output),level)
@@ -110,11 +106,7 @@ HidDeviceStatus HidDevice::connectRealDev ()
 		}
 		PROGRESS(1);
 		// Poll in 100ms intervals.
-#		if defined(WIN32)
-			Sleep(100);
-#		else
-			usleep(100000);
-#		endif
+		msSleep(100);
 	}
 	return DeviceNotFound;
 }
@@ -124,35 +116,21 @@ int unsigned HidDevice::getBufferSize ()
 	return CypressPsoc::BufferSize;
 }
 
-SerialStatus HidDevice::serialOpen ()
+SerialStatus HidDevice::detect ()
 {
 	QList<QSerialPortInfo> const serialPortInfos = QSerialPortInfo::availablePorts();
 	OUTPUT(3) << "Total number of ports available: " << serialPortInfos.count();
 	for (QList<QSerialPortInfo>::const_iterator i = serialPortInfos.begin(); i != serialPortInfos.end(); ++i)
 		if (matchingSerialDetectedAndSetup(*i))
-			return SerialDetected;
+			return openSerialPort();
 	return NoSerialDetected;
 }
 
-SerialStatus HidDevice::serialSendReset ()
+SerialStatus HidDevice::sendReset ()
 {
-	if (serialDevice.length() == 0) return NoSerialDetected;
-	QSerialPort serialPort;
-	serialPort.setPortName(serialDevice);
-	if (! serialPort.open(QIODevice::WriteOnly))
-	{
-		output.error() << "Failed to open serial port " << serialDevice.toStdString()
-			<< ": " << serialPort.errorString().toStdString();
-		return SerialPortCouldNotBeOpened;
-	}
 	serialPort.setDataTerminalReady(true);
-#	if defined(WIN32)
-		Sleep(100);
-#	else
-		usleep(100000);
-#	endif
+	msSleep(100);
 	serialPort.setDataTerminalReady(false);
-	serialPort.close();
 	return SerialResetSent;
 }
 
@@ -166,7 +144,6 @@ bool HidDevice::matchingSerialDetectedAndSetup (QSerialPortInfo const & serialPo
 	OUTPUT(3) << "Location: " << serialPortInfo.systemLocation().toStdString();
 	OUTPUT(3) << "Description: " << (!description.isEmpty() ? description : blankString).toStdString();
 	OUTPUT(3) << "Manufacturer: " << (!manufacturer.isEmpty() ? manufacturer : blankString).toStdString();
-	//OUTPUT(3) << "Serial number: " << (!serialNumber.isEmpty() ? serialNumber : blankString).toStdString();
 	OUTPUT(3) << "Vendor Identifier: " << (serialPortInfo.hasVendorIdentifier() ? QByteArray::number(serialPortInfo.vendorIdentifier(), 16) : blankString).toStdString();
 	OUTPUT(3) << "Product Identifier: " << (serialPortInfo.hasProductIdentifier() ? QByteArray::number(serialPortInfo.productIdentifier(), 16) : blankString).toStdString();
 	OUTPUT(3) << "Busy: " << (serialPortInfo.isBusy() ? "Yes" : "No");
@@ -176,9 +153,33 @@ bool HidDevice::matchingSerialDetectedAndSetup (QSerialPortInfo const & serialPo
 			serialPortInfo.productIdentifier() == ProductIdSerial)
 		{
 			OUTPUT(2) << "Mono detected on serial bus.";
-			serialDevice = serialPortInfo.systemLocation();
+			serialInfo = serialPortInfo;
 			return true;
 		}
 	}
 	return false;
+}
+
+SerialStatus HidDevice::openSerialPort ()
+{
+	QString const serialDevice = serialInfo.systemLocation();
+	if (serialDevice.length() == 0)
+		return NoSerialDetected;
+	serialPort.setPortName(serialDevice);
+	if (! serialPort.open(QIODevice::ReadWrite))
+	{
+		output.error() << "Failed to open serial port " << serialDevice.toStdString()
+			<< ": " << serialPort.errorString().toStdString();
+		return SerialPortCouldNotBeOpened;
+	}
+	return SerialDetected;
+}
+
+int HidDevice::getAvailableBytes (uint8_t * buffer, size_t size)
+{
+	OUTPUT(1) << "{{ serial port ready }}";
+	QByteArray bytes = serialPort.readAll();
+	for (size_t i = 0; i < (size_t)bytes.length() && i < size; ++i)
+		buffer[i] = bytes.at(i);
+	return bytes.length();
 }

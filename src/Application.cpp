@@ -8,8 +8,10 @@
 #include "OutputCollector.h"
 #include "ProgrammerFactory.h"
 #include "ResponsiveAppMockDevice.h"
+#include "sleep.h"
 #include "UnresponsiveAppMockDevice.h"
 #include <memory>
+#include <ostream>
 #include <QCommandLineParser>
 #include <QFile>
 #include <QFileInfo>
@@ -24,6 +26,7 @@ enum OperationMode
 	UnknownMockDevice,
 	Version,
 	Detect,
+	Serial,
 	License,
 	Program
 };
@@ -58,6 +61,7 @@ public:
 		setupVersionOptions();
 		setupLicenseOptions();
 		setupDetectOptions();
+		setupSerialOptions();
 		setupDeviceSimulationOptions();
 		setupProgramOptions();
 		setupDebugOptions();
@@ -139,6 +143,15 @@ private:
 		);
 		parser.addOption(*detectOption);
 	}
+	void setupSerialOptions ()
+	{
+		serialOption = new QCommandLineOption
+		(
+			QStringList() << "s" << "serial",
+			"Continuously echo whatever a connected Mono is transmitting on the serial bus."
+		);
+		parser.addOption(*serialOption);
+	}
 	void setupProgramOptions()
 	{
 		programOption = new QCommandLineOption
@@ -198,6 +211,7 @@ private:
 		if (parser.isSet(*licenseOption)) mode = License;
 		else if (parser.isSet(*versionOption)) mode = Version;
 		else if (parser.isSet(*detectOption)) mode = Detect;
+		else if (parser.isSet(*serialOption)) mode = Serial;
 		else if (parser.isSet(*programOption))
 		{
 			mode = Program;
@@ -210,6 +224,7 @@ private:
 	QCommandLineOption * simulatedDeviceType;
 	QCommandLineOption * licenseOption;
 	QCommandLineOption * detectOption;
+	QCommandLineOption * serialOption;
 	QCommandLineOption * programOption;
 	QCommandLineOption * debugOption;
 	QCommandLineOption * silentOption;
@@ -227,7 +242,7 @@ QStringList Arguments::deviceType = QStringList()
 	;
 
 Application::Application (QCoreApplication * qtApp_, std::ostream & out, std::ostream & error)
-: qtApp(qtApp_)
+: qtApp(qtApp_), stdout(out)
 {
 	setupApplicationConstants();
 	output = new OutputCollector(out,error);
@@ -280,6 +295,8 @@ StatusCode Application::run ()
 			return displayVersion();
 		case Detect:
 			return detectDevice();
+		case Serial:
+			return echoSerial();
 		case Program:
 		 	return programDevice(arguments->getAppPath());
 		case Unknown:
@@ -330,10 +347,10 @@ StatusCode Application::programDevice (QString const & appPath)
 	QFileInfo file(appPath);
 	if (!fileExists(file)) return FileDoesNotExist;
 	std::unique_ptr<IDeviceCommunicator> psocDevice(createDeviceCommunication());
-	if (SerialDetected == psocDevice->serialOpen())
+	if (SerialDetected == psocDevice->detect())
 	{
 		OUTPUT(1) << "Resetting Mono device to start bootloader";
-		if (SerialResetSent != psocDevice->serialSendReset())
+		if (SerialResetSent != psocDevice->sendReset())
 		{
 			return CouldNotResetMono;
 		}
@@ -376,10 +393,40 @@ StatusCode Application::programDeviceInBootloader (QString const & appPath, IPro
 	}
 }
 
+StatusCode Application::echoSerial ()
+{
+	OUTPUT(1) << "Setting up serial communication with device";
+	std::unique_ptr<IDeviceCommunicator> psocDevice(createDeviceCommunication());
+	while (true)
+	{
+		if (SerialDetected != psocDevice->detect())
+		{
+			OUTPUT(0) << "{{ waiting for serial device... }}";
+			msSleep(100);
+		}
+		else
+		{
+			OUTPUT(0) << "{{ connected }}";
+			while (true)
+			{
+				uint8_t buffer[256];
+				int bytes = psocDevice->getAvailableBytes(buffer,sizeof(buffer));
+				if (bytes < 0)
+					break;
+				else
+					stdout << buffer;
+				msSleep(1);
+			}
+		}
+	}
+	// Unreachable
+	return NoConnectionToMonoDevice;
+}
+
 StatusCode Application::detectDevice ()
 {
 	std::unique_ptr<IDeviceCommunicator> psocDevice(createDeviceCommunication());
-	if (SerialDetected == psocDevice->serialOpen())
+	if (SerialDetected == psocDevice->detect())
 	{
 		OUTPUT(0) << "Mono device running app detected.";
 		return Success;

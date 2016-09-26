@@ -9,7 +9,9 @@
 #define OUTPUT(level) OUTPUTCOLLECTOR_LINE((output),level)
 #define PROGRESS(level) OUTPUTCOLLECTOR_PROGRESS((output),level)
 
-class InBootloaderMockDevice : public IDeviceCommunicator
+class InBootloaderMockDevice
+:
+	public IDeviceCommunicator
 {
 public:
 	static int const BUFFERSIZE = 64;
@@ -150,13 +152,17 @@ public:
 	{
 		return BUFFERSIZE;
 	}
-	virtual SerialStatus serialOpen ()
+	virtual SerialStatus detect ()
 	{
 		return NoSerialDetected;
 	}
-	virtual SerialStatus serialSendReset ()
+	virtual SerialStatus sendReset ()
 	{
 		return NoSerialDetected;
+	}
+	virtual int getAvailableBytes (uint8_t *, size_t)
+	{
+		return -1;
 	}
 	virtual ~InBootloaderMockDevice ()
 	{
