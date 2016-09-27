@@ -11,6 +11,9 @@ enum Ids
 {
 	VendorId = 0x4b4,
 	ProductIdSerial = 0xf232,
+	// RS232 Mini-Tester
+	//VendorId = 0x403, // mini tester
+	//ProductIdSerial = 0x6001,
 };
 } // namespace
 
@@ -128,6 +131,7 @@ SerialStatus HidDevice::detect ()
 
 SerialStatus HidDevice::sendReset ()
 {
+	OUTPUT(1) << "{{ Reset sent }}";
 	serialPort.setDataTerminalReady(true);
 	msSleep(100);
 	serialPort.setDataTerminalReady(false);
@@ -166,20 +170,28 @@ SerialStatus HidDevice::openSerialPort ()
 	if (serialDevice.length() == 0)
 		return NoSerialDetected;
 	serialPort.setPortName(serialDevice);
-	if (! serialPort.open(QIODevice::ReadWrite))
+	if (! serialPort.open(QIODevice::ReadOnly))
 	{
-		output.error() << "Failed to open serial port " << serialDevice.toStdString()
-			<< ": " << serialPort.errorString().toStdString();
+		//output.error() << "Failed to open serial port " << serialDevice.toStdString()
+		//	<< ": " << serialPort.errorString().toStdString();
 		return SerialPortCouldNotBeOpened;
 	}
+	serialPort.setSettingsRestoredOnClose(false);
+	OUTPUT(0) << "{{ restore = " << serialPort.settingsRestoredOnClose() << " }}";
 	return SerialDetected;
 }
 
 int HidDevice::getAvailableBytes (uint8_t * buffer, size_t size)
 {
-	OUTPUT(1) << "{{ serial port ready }}";
-	QByteArray bytes = serialPort.readAll();
-	for (size_t i = 0; i < (size_t)bytes.length() && i < size; ++i)
-		buffer[i] = bytes.at(i);
-	return bytes.length();
+	//OUTPUT(1) << "{{ serial port ready }}";
+	if (serialPort.waitForReadyRead(1000))
+	{
+		QByteArray bytes = serialPort.readAll();
+		size_t i = 0;
+		for (; i < (size_t)bytes.length() && i < (size-1); ++i)
+			buffer[i] = bytes.at(i);
+		buffer[i] = 0;
+		return bytes.length();
+	}
+	return -1;
 }

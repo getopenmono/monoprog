@@ -401,7 +401,7 @@ StatusCode Application::echoSerial ()
 	{
 		if (SerialDetected != psocDevice->detect())
 		{
-			OUTPUT(0) << "{{ waiting for serial device... }}";
+			OUTPUT(2) << "{{ waiting for serial device... }}";
 			msSleep(100);
 		}
 		else
@@ -428,12 +428,12 @@ StatusCode Application::detectDevice ()
 	std::unique_ptr<IDeviceCommunicator> psocDevice(createDeviceCommunication());
 	if (SerialDetected == psocDevice->detect())
 	{
-		OUTPUT(0) << "Mono device running app detected.";
+		OUTPUT(2) << "Mono device running app detected.";
 		return Success;
 	}
 	if (CYRET_SUCCESS == psocDevice->openConnection())
 	{
-		OUTPUT(0) << "Mono device in bootloader detected.";
+		OUTPUT(2) << "Mono device in bootloader detected.";
 		psocDevice->closeConnection();
 		return Success;
 	}

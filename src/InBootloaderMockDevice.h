@@ -156,6 +156,10 @@ public:
 	{
 		return NoSerialDetected;
 	}
+	virtual SerialStatus open ()
+	{
+		return SerialPortCouldNotBeOpened;
+	}
 	virtual SerialStatus sendReset ()
 	{
 		return NoSerialDetected;
