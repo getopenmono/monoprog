@@ -31,3 +31,13 @@ Feature: Application will detect Mono device
 		Examples:
 			| board        |
 			| responsive   |
+
+	Scenario Outline: Should change timeout
+		When I run `monoprog --detect --mock disconnected <switch> <ms>`
+		And the output should contain "Mono device not detected on USB port"
+		And the exit status should be 2
+
+		Examples:
+			| switch    | ms   |
+			| -t        | 200  |
+			| --timeout | 400  |
