@@ -63,6 +63,7 @@ public:
 		setupDebugOptions();
 		setupSilentOptions();
 		setupTimeoutOptions();
+		setupHeadlessOptions();
 		parser.process(qtApp);
 		decideOperationModeFromArguments();
 		decideDeviceType(output);
@@ -86,12 +87,16 @@ public:
 	}
 	int getVerbosity () const
 	{
-		if (parser.isSet(*silentOption)) return 0;
+		if (parser.isSet(*silentOption) || parser.isSet(*headlessOption)) return 0;
 		else return parser.value(*debugOption).toInt();
 	}
 	int getMsTimeout () const
 	{
 		return parser.value(*timeoutOption).toInt();
+	}
+	bool getHeadless () const
+	{
+		return parser.isSet(*headlessOption);
 	}
 	QCommandLineParser & getParser ()
 	{
@@ -144,7 +149,7 @@ private:
 		);
 		parser.addOption(*detectOption);
 	}
-	void setupProgramOptions()
+	void setupProgramOptions ()
 	{
 		programOption = new QCommandLineOption
 		(
@@ -154,7 +159,7 @@ private:
 		);
 		parser.addOption(*programOption);
 	}
-	void setupDebugOptions()
+	void setupDebugOptions ()
 	{
 		debugOption = new QCommandLineOption
 		(
@@ -165,7 +170,7 @@ private:
 		);
 		parser.addOption(*debugOption);
 	}
-	void setupSilentOptions()
+	void setupSilentOptions ()
 	{
 		silentOption = new QCommandLineOption
 		(
@@ -174,7 +179,7 @@ private:
 		);
 		parser.addOption(*silentOption);
 	}
-	void setupTimeoutOptions()
+	void setupTimeoutOptions ()
 	{
 		timeoutOption = new QCommandLineOption
 		(
@@ -184,6 +189,15 @@ private:
 			"500"
 		);
 		parser.addOption(*timeoutOption);
+	}
+	void setupHeadlessOptions ()
+	{
+		headlessOption = new QCommandLineOption
+		(
+			QStringList() << "H" << "headless",
+			"Make output more friendly for other programs."
+		);
+		parser.addOption(*headlessOption);
 	}
 	void decideDeviceType (OutputCollector & output)
 	{
@@ -230,6 +244,7 @@ private:
 	QCommandLineOption * debugOption;
 	QCommandLineOption * silentOption;
 	QCommandLineOption * timeoutOption;
+	QCommandLineOption * headlessOption;
 	OperationMode mode;
 	DeviceType device;
 	QString programPath;
@@ -262,7 +277,7 @@ void Application::setupApplicationConstants ()
 {
 	QCoreApplication::setApplicationName("monoprog");
 	QCoreApplication::setOrganizationName("Monolit ApS");
-	QCoreApplication::setApplicationVersion("0.9.0");
+	QCoreApplication::setApplicationVersion("0.9.2");
 }
 
 IDeviceCommunicator * Application::createDeviceCommunication () const
@@ -401,12 +416,26 @@ StatusCode Application::detectDevice ()
 	std::unique_ptr<IDeviceCommunicator> psocDevice(createDeviceCommunication());
 	if (SerialDetected == psocDevice->serialOpen())
 	{
-		OUTPUT(0) << "Mono device running app detected.";
+		if (arguments->getHeadless())
+		{
+			OUTPUT(0) << "app";
+		}
+		else
+		{
+			OUTPUT(0) << "Mono device running app detected.";
+		}
 		return Success;
 	}
 	if (CYRET_SUCCESS == psocDevice->openConnection(arguments->getMsTimeout()))
 	{
-		OUTPUT(0) << "Mono device in bootloader detected.";
+		if (arguments->getHeadless())
+		{
+			OUTPUT(0) << "bootloader";
+		}
+		else
+		{
+			OUTPUT(0) << "Mono device in bootloader detected.";
+		}
 		psocDevice->closeConnection();
 		return Success;
 	}

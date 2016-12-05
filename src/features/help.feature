@@ -3,12 +3,12 @@ Feature: Application can display help and license
 	As a maker
 	I want the application to display a usage summary when invoked with no arguments.
 
-	Scenario: Application invoked with no arguments
+	Scenario: No arguments
 		When I run `monoprog`
 		Then the output should contain "Usage:"
 		And the exit status should be 1
 
-	Scenario Outline: Application invoked with help argument
+	Scenario Outline: Help argument
 		When I run `monoprog <arg>`
 		Then the output should contain "Usage:"
 		And the exit status should be 0
@@ -18,9 +18,9 @@ Feature: Application can display help and license
 			| -h     |
 			| --help |
 
-	Scenario Outline: Application invoked with version argument
+	Scenario Outline: Version argument
 		When I run `monoprog <arg>`
-		Then the output should contain "monoprog 0.9.0"
+		Then the output should contain "monoprog 0.9.2"
 		And the exit status should be 0
 
 		Examples:
@@ -28,7 +28,7 @@ Feature: Application can display help and license
 			| -V        |
 			| --version |
 
-	Scenario: Application can display licenses and versions of agregated software
+	Scenario: Display licenses and versions of agregated software
 		When I run `monoprog --license`
 		Then the output should contain "Monolit ApS"
 		And the output should contain "free of charge"

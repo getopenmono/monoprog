@@ -3,7 +3,7 @@ Feature: Application should program Mono device
 	As a maker
 	I want the application to program Mono over the USB.
 
-	Scenario Outline: Application should complain about missing files
+	Scenario Outline: Complain about missing files
 		When I run `monoprog --mock devboard --program` on test data `<file>`
 		Then the output should contain "File does not exist"
 		And the exit status should be 4
@@ -13,7 +13,7 @@ Feature: Application should program Mono device
 			| doesNotExist.elf |
 			| mumbo jumbo      |
 
-	Scenario Outline: Application should complain about wrong file type
+	Scenario Outline: Complain about wrong file type
 		When I run `monoprog --mock monoboard --program` on test data `<file>`
 		Then the output should contain "Unknown program type"
 		And the exit status should be 5
@@ -23,7 +23,7 @@ Feature: Application should program Mono device
 			| a.out |
 			| b.o   |
 
-	Scenario Outline: Application should complain about broken files
+	Scenario Outline: Complain about broken files
 		When I run `monoprog --mock devboard --program` on test data `<file>`
 		Then the output should contain "Corrupt program"
 		And the exit status should be 3
@@ -33,7 +33,7 @@ Feature: Application should program Mono device
 			| broken.cyacd |
 			| broken.ELF   |
 
-	Scenario Outline: Application should program device with a valid CYACD file
+	Scenario Outline: Valid CYACD file
 		When I run `monoprog --mock <board> --program` on test data `<cyacd>`
 		And the exit status should be 0
 
@@ -48,7 +48,7 @@ Feature: Application should program Mono device
 			| usbuart_test.cyacd    | responsive |
 			| mono_i2c_test.cyacd   | responsive |
 
-	Scenario Outline: Application should complain about missing connection when Mono not detected
+	Scenario Outline: Complain about missing connection when Mono not detected
 		When I run `monoprog --mock <board> --program` on test data `<file>`
 		Then the output should contain "device not detected"
 		And the exit status should be 2
@@ -63,7 +63,7 @@ Feature: Application should program Mono device
 			| ledBlinker.cyacd     | unresponsive |
 			| wayDisplayTest2.elf  | unresponsive |
 
-	Scenario Outline: Application should program device with a valid ELF file
+	Scenario Outline: Valid ELF file
 		When I run `monoprog --mock <board> --program` on test data `<elf>`
 		Then the exit status should be 0
 
@@ -80,7 +80,16 @@ Feature: Application should program Mono device
 			| mono_i2c_test.elf   | responsive |
 			| mono_project.elf    | responsive |
 
-	Scenario: Application should complain when silicon ID does not match program
+	Scenario: Complain when silicon ID does not match program
 		When I run `monoprog --mock devboard --program` on test data `wayDisplayTest2.elf`
 		Then the output should contain "Silicon ID for device does not match program"
 		And the exit status should be 7
+
+	Scenario Outline: Output for headless use
+		When I run `monoprog --mock monoboard <arg> --program` on test data `usbuart_test.elf`
+		Then the exit status should be 0
+
+		Examples:
+			| arg        |
+			| -H         |
+			| --headless |

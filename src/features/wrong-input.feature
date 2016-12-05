@@ -3,7 +3,7 @@ Feature: Application will complain about wrong input
 	As a maker
 	I want the application to tell me exactly what was wrong with wrong input.
 
-	Scenario Outline: Application invoked with wrong arguments
+	Scenario Outline: Wrong arguments
 		When I run `monoprog <arg>`
 		Then the output should contain "Unknown option '<option>'"
 		And the exit status should be 1
@@ -13,12 +13,12 @@ Feature: Application will complain about wrong input
 			| -x       | x      |
 			| --babble | babble |
 
-    Scenario: Application invoked with missing mock device
+    Scenario: Missing mock device
         When I run `monoprog --mock`
         Then the output should contain "Missing value after '--mock'"
         And the exit status should be 1
 
-    Scenario Outline: Application invoked with wrong mock device
+    Scenario Outline: Wrong mock device
         When I run `monoprog --mock blabla`
         Then the output should contain "Unknown mock device"
         Then the output should contain "<device>"

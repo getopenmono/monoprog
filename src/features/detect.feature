@@ -13,7 +13,7 @@ Feature: Application will detect Mono device
 			| -d       | disconnected |
 			| --detect | unresponsive |
 
-	Scenario Outline: Should detect resposive device
+	Scenario Outline: Should detect bootloader
 		When I run `monoprog --detect --mock <board>`
 		Then the output should contain "Mono device in bootloader detected"
 		And the exit status should be 0
@@ -23,14 +23,25 @@ Feature: Application will detect Mono device
 			| devboard     |
 			| monoboard    |
 
-	Scenario Outline: Should detect resposive device
-		When I run `monoprog --detect --mock <board>`
-		Then the output should contain "Mono device running app detected"
+	Scenario Outline: Should detect bootloader headless
+		When I run `monoprog --detect --headless --mock <board>`
+		Then the output should contain exactly "bootloader\n"
 		And the exit status should be 0
 
 		Examples:
 			| board        |
-			| responsive   |
+			| devboard     |
+			| monoboard    |
+
+	Scenario: Should detect resposive device
+		When I run `monoprog --detect --mock responsive`
+		Then the output should contain "Mono device running app detected"
+		And the exit status should be 0
+
+	Scenario: Should detect resposive device headless
+		When I run `monoprog --detect --headless --mock responsive`
+		Then the output should contain exactly "app\n"
+		And the exit status should be 0
 
 	Scenario Outline: Should change timeout
 		When I run `monoprog --detect --mock disconnected <switch> <ms>`
