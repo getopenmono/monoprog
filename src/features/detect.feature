@@ -39,5 +39,5 @@ Feature: Application will detect Mono device
 
 		Examples:
 			| switch    | ms   |
-			| -t        | 200  |
-			| --timeout | 400  |
+			| -t        | 100  |
+			| --timeout | 1000 |

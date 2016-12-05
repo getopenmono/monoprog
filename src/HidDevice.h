@@ -12,7 +12,7 @@ class HidDevice : public IDeviceCommunicator
 {
 public:
 	HidDevice (OutputCollector & output);
-	virtual int openConnection ();
+	virtual int openConnection (uint32_t msTimeout);
 	virtual int closeConnection ();
 	virtual int writeData (uint8_t * data, int bytesToWrite);
 	virtual int readData (uint8_t * buffer, int bytesToRead);
@@ -23,7 +23,7 @@ public:
 	virtual ~HidDevice ();
 private:
 	OutputCollector & output;
-	HidDeviceStatus connectRealDev ();
+	HidDeviceStatus connectRealDev (uint32_t msTimeout);
 	bool matchingSerialDetectedAndSetup (QSerialPortInfo const & serialPortInfo);
 	hid_device * usbDevice;
 	QString serialDevice;

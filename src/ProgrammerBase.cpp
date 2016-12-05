@@ -7,12 +7,13 @@ namespace {
 /**
  * Functions passed to Cypress Bootloader API.
  * Need to be global variables so that the Read and Write C functions can see
- * the open USB device and the verbosity.
+ * the open USB device and the output collector.
  */
 IDeviceCommunicator * psocDevice;
+uint32_t msTimeout;
 extern "C" int openConnection ()
 {
-	return psocDevice->openConnection();
+	return psocDevice->openConnection(msTimeout);
 }
 extern "C" int closeConnection ()
 {
@@ -33,11 +34,12 @@ extern "C" void progressUpdate (char unsigned arrayId, int unsigned short rowNr)
 
 } // namespace {
 
-ProgrammerBase::ProgrammerBase (QFileInfo & fileInfo, IDeviceCommunicator * device_)
+ProgrammerBase::ProgrammerBase (QFileInfo & fileInfo, IDeviceCommunicator * device_, uint32_t ms)
 : file(fileInfo)
 , device(device_)
 {
 	psocDevice = device.get();
+	msTimeout = ms;
 }
 
 void ProgrammerBase::setOutput (OutputCollector * output)

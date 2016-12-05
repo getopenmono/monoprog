@@ -18,7 +18,7 @@ public:
 	{
 		OUTPUT(1) << "Using connected mock device with responsive app.";
 	}
-	virtual int openConnection ()
+	virtual int openConnection (uint32_t msTimeout)
 	{
 		if (ResetNotYetDetected == state)
 		{
@@ -28,7 +28,7 @@ public:
 		{
 			OUTPUT(2) << "Mono device not in bootloader.";
 		}
-		return InBootloaderMockDevice::openConnection();
+		return InBootloaderMockDevice::openConnection(msTimeout);
 	}
 	virtual int closeConnection ()
 	{

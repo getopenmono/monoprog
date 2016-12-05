@@ -20,7 +20,7 @@ public:
 	{
 		OUTPUT(1) << "Using connected mock device.";
 	}
-	virtual int openConnection ()
+	virtual int openConnection (uint32_t)
 	{
 		return CYRET_SUCCESS;
 	}

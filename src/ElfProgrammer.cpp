@@ -76,8 +76,8 @@ struct ConfiguredFlashRow
 
 #define OUTPUT(level) OUTPUTCOLLECTOR_LINE((*output),level)
 
-ElfProgrammer::ElfProgrammer (QFileInfo & file, IDeviceCommunicator * device)
-: ProgrammerBase(file,device)
+ElfProgrammer::ElfProgrammer (QFileInfo & file, IDeviceCommunicator * device, uint32_t msTimeout)
+: ProgrammerBase(file,device,msTimeout)
 , bootloaderVersion(0)
 , bootloaderFound(false)
 {

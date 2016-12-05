@@ -10,12 +10,13 @@ struct IDeviceCommunicator;
 class ProgrammerBase : public IProgrammer
 {
 public:
-	ProgrammerBase (QFileInfo & file, IDeviceCommunicator * device);
+	ProgrammerBase (QFileInfo & file, IDeviceCommunicator * device, uint32_t msTimeout);
 	virtual void setOutput (OutputCollector * output);
 protected:
 	CyBtldr_CommunicationsData getCybtldrCommPack () const;
 	CyBtldr_ProgressUpdate * getCybtldrProgressUpdate () const;
 	OutputCollector * output;
+	uint32_t msTimeout;
 	QFileInfo & file;
 private:
 	std::unique_ptr<IDeviceCommunicator> device;

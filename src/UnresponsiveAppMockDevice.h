@@ -3,6 +3,11 @@
 #include "IDeviceCommunicator.h"
 #include "OutputCollector.h"
 #include "cybtldr_api.h"
+#if defined(WIN32)
+#	include <windows.h>
+#else
+#	include <unistd.h>
+#endif
 
 #define OUTPUT(level) OUTPUTCOLLECTOR_LINE((output),level)
 
@@ -14,8 +19,13 @@ public:
 	{
 		OUTPUT(1) << "Using connected but unresponsive mock device.";
 	}
-	virtual int openConnection ()
+	virtual int openConnection (uint32_t msTimeout)
 	{
+#		if defined(WIN32)
+			Sleep(msTimeout);
+#		else
+			usleep(msTimeout * 1000);
+#		endif
 		output.error() << "Mono device not detected on USB ports.";
 		return -1;
 	}

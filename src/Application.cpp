@@ -62,6 +62,7 @@ public:
 		setupProgramOptions();
 		setupDebugOptions();
 		setupSilentOptions();
+		setupTimeoutOptions();
 		parser.process(qtApp);
 		decideOperationModeFromArguments();
 		decideDeviceType(output);
@@ -87,6 +88,10 @@ public:
 	{
 		if (parser.isSet(*silentOption)) return 0;
 		else return parser.value(*debugOption).toInt();
+	}
+	int getMsTimeout () const
+	{
+		return parser.value(*timeoutOption).toInt();
 	}
 	QCommandLineParser & getParser ()
 	{
@@ -169,6 +174,17 @@ private:
 		);
 		parser.addOption(*silentOption);
 	}
+	void setupTimeoutOptions()
+	{
+		timeoutOption = new QCommandLineOption
+		(
+			QStringList() << "t" << "timeout",
+			"Set device detection timeout (default is 500 ms).",
+			"ms",
+			"500"
+		);
+		parser.addOption(*timeoutOption);
+	}
 	void decideDeviceType (OutputCollector & output)
 	{
 		QString type = parser.value(*simulatedDeviceType);
@@ -213,6 +229,7 @@ private:
 	QCommandLineOption * programOption;
 	QCommandLineOption * debugOption;
 	QCommandLineOption * silentOption;
+	QCommandLineOption * timeoutOption;
 	OperationMode mode;
 	DeviceType device;
 	QString programPath;
@@ -341,7 +358,7 @@ StatusCode Application::programDevice (QString const & appPath)
 			return CouldNotResetMono;
 		}
 	}
-	IProgrammer * programmer = ProgrammerFactory::createProgrammer(file,psocDevice.release());
+	IProgrammer * programmer = ProgrammerFactory::createProgrammer(file,psocDevice.release(),arguments->getMsTimeout());
 	if (!programmer)
 	{
 		output->error() << "Unknown program type: " << file.suffix().toStdString();
@@ -387,7 +404,7 @@ StatusCode Application::detectDevice ()
 		OUTPUT(0) << "Mono device running app detected.";
 		return Success;
 	}
-	if (CYRET_SUCCESS == psocDevice->openConnection())
+	if (CYRET_SUCCESS == psocDevice->openConnection(arguments->getMsTimeout()))
 	{
 		OUTPUT(0) << "Mono device in bootloader detected.";
 		psocDevice->closeConnection();

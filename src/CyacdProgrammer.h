@@ -8,7 +8,7 @@ struct IDeviceCommunicator;
 class CyacdProgrammer : public ProgrammerBase
 {
 public:
-	CyacdProgrammer (QFileInfo & file, IDeviceCommunicator * device);
+	CyacdProgrammer (QFileInfo & file, IDeviceCommunicator * device, uint32_t msTimeout);
 	virtual ProgramStatus program ();
 };
 

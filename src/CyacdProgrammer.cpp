@@ -7,8 +7,8 @@
 
 #define OUTPUT(level) OUTPUTCOLLECTOR_LINE((*output),level)
 
-CyacdProgrammer::CyacdProgrammer (QFileInfo & file, IDeviceCommunicator * device)
-: ProgrammerBase(file,device)
+CyacdProgrammer::CyacdProgrammer (QFileInfo & file, IDeviceCommunicator * device, uint32_t msTimeout)
+: ProgrammerBase(file,device,msTimeout)
 {
 }
 

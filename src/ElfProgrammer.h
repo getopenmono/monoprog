@@ -11,7 +11,7 @@ struct IDeviceCommunicator;
 class ElfProgrammer : public ProgrammerBase
 {
 public:
-	ElfProgrammer (QFileInfo & file, IDeviceCommunicator * device);
+	ElfProgrammer (QFileInfo & file, IDeviceCommunicator * device, uint32_t msTimeout);
 	virtual ~ElfProgrammer();
 	virtual ProgramStatus program ();
 private:

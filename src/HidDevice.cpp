@@ -38,9 +38,9 @@ HidDevice::~HidDevice ()
 {
 }
 
-int HidDevice::openConnection ()
+int HidDevice::openConnection (uint32_t msTimeout)
 {
-	switch (connectRealDev())
+	switch (connectRealDev(msTimeout))
 	{
 		default:
 		case DeviceNotFound:
@@ -91,11 +91,13 @@ void HidDevice::progressUpdate (uint8_t arrayId, int unsigned short rowNr)
 	PROGRESS(1);
 }
 
-HidDeviceStatus HidDevice::connectRealDev ()
+HidDeviceStatus HidDevice::connectRealDev (uint32_t msTimeout)
 {
 	OUTPUT(2) << "Looking for Mono as a USB device.";
+	OUTPUT(3) << "Timeout " << msTimeout << "ms.";
 	hid_device_info * device = 0;
-	int tries = 50;
+	int tries = (msTimeout / 10) + 1;
+	OUTPUT(4) << "Will try " << tries << " times.";
 	while (tries-- >= 0)
 	{
 		device = hid_enumerate(CypressPsoc::VendorIdUsb,CypressPsoc::ProductIdUsb);
@@ -109,11 +111,11 @@ HidDeviceStatus HidDevice::connectRealDev ()
 			return ConnectedToDevice;
 		}
 		PROGRESS(1);
-		// Poll in 100ms intervals.
+		// Poll in 10ms intervals.
 #		if defined(WIN32)
-			Sleep(100);
+			Sleep(10);
 #		else
-			usleep(100000);
+			usleep(10000);
 #		endif
 	}
 	return DeviceNotFound;
