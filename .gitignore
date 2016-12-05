@@ -4,3 +4,4 @@ src/bin
 .DS_Store
 *.vcxproj*
 .vagrant/*
+target_wrapper.sh
