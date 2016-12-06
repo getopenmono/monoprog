@@ -7,13 +7,26 @@
 
 #define OUTPUT(level) OUTPUTCOLLECTOR_LINE((*output),level)
 
-CyacdProgrammer::CyacdProgrammer (QFileInfo & file, IDeviceCommunicator * device, uint32_t msTimeout)
-: ProgrammerBase(file,device,msTimeout)
+CyacdProgrammer::CyacdProgrammer
+(
+	QFileInfo & file,
+	IDeviceCommunicator * device,
+	IProgressUpdater * updater,
+	uint32_t msTimeout
+)
+: ProgrammerBase(file,device,updater,msTimeout)
 {
+}
+
+size_t CyacdProgrammer::getProgramSize ()
+{
+	checkSetup();
+	return 0;
 }
 
 ProgramStatus CyacdProgrammer::program ()
 {
+	checkSetup();
 	std::string const filePath = file.filePath().toStdString();
 	char const * path = filePath.c_str();
 	OUTPUT(5) << "CyacdProgrammer " << path;

@@ -141,11 +141,6 @@ public:
 		output.outputHex(4,(char const *)buffer,bytesToRead,16);
 		return CYRET_SUCCESS;
 	}
-	virtual void progressUpdate (uint8_t arrayId, int unsigned short rowNr)
-	{
-		OUTPUT(2) << "Completed array '" << (int) arrayId << "' row " << rowNr;
-		PROGRESS(1);
-	}
 	virtual int unsigned getBufferSize ()
 	{
 		return BUFFERSIZE;

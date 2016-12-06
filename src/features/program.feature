@@ -3,6 +3,16 @@ Feature: Application should program Mono device
 	As a maker
 	I want the application to program Mono over the USB.
 
+	Scenario Outline: Camplain about missing program
+		When I run `monoprog <arg>`
+		Then the output should contain "Missing value after '<arg>'"
+		And the exit status should be 1
+
+		Examples:
+			| arg       |
+			| -p        |
+			| --program |
+
 	Scenario Outline: Complain about missing files
 		When I run `monoprog --mock devboard --program` on test data `<file>`
 		Then the output should contain "File does not exist"

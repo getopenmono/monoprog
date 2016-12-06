@@ -45,10 +45,6 @@ public:
 		if (Bootloader != state) return -1;
 		return InBootloaderMockDevice::readData(buffer,bytesToRead);
 	}
-	virtual void progressUpdate (char unsigned arrayId, int unsigned short rowNr)
-	{
-		if (Bootloader == state) InBootloaderMockDevice::progressUpdate(arrayId,rowNr);
-	}
 	virtual int unsigned getBufferSize ()
 	{
 		return 64;

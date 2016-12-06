@@ -41,9 +41,6 @@ public:
 	{
 		return -1;
 	}
-	virtual void progressUpdate (char unsigned /*arrayId*/, int unsigned short /*rowNr*/)
-	{
-	}
 	virtual int unsigned getBufferSize ()
 	{
 		return 64;

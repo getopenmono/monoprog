@@ -4,7 +4,7 @@ Feature: Application will detect Mono device
 	I want the application to indicate whether or not it can connect to Mono.
 
 	Scenario Outline: Should not detect unresposive device
-		When I run `monoprog --mock <board> <arg>`
+		When I run `monoprog --timeout 10 --mock <board> <arg>`
 		Then the output should contain "Mono device not detected on USB port"
 		And the exit status should be 2
 

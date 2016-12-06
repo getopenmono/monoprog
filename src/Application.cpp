@@ -1,9 +1,12 @@
 #include "Application.h"
 #include "cybtldr_utils.h"
+#include "HeadlessProgressUpdater.h"
 #include "HidDevice.h"
+#include "HumanProgressUpdater.h"
 #include "IDeviceCommunicator.h"
 #include "InBootloaderMockDevice.h"
 #include "IProgrammer.h"
+#include "IProgressUpdater.h"
 #include "NotConnectedMockDevice.h"
 #include "OutputCollector.h"
 #include "ProgrammerFactory.h"
@@ -24,6 +27,7 @@ enum OperationMode
 	UnknownMockDevice,
 	Version,
 	Detect,
+	Info,
 	License,
 	Program
 };
@@ -64,6 +68,7 @@ public:
 		setupSilentOptions();
 		setupTimeoutOptions();
 		setupHeadlessOptions();
+		setupInfoOptions();
 		parser.process(qtApp);
 		decideOperationModeFromArguments();
 		decideDeviceType(output);
@@ -199,6 +204,16 @@ private:
 		);
 		parser.addOption(*headlessOption);
 	}
+	void setupInfoOptions ()
+	{
+		infoOption = new QCommandLineOption
+		(
+			QStringList() << "i" << "info",
+			"Display meta information from <app>.",
+			"app"
+		);
+		parser.addOption(*infoOption);
+	}
 	void decideDeviceType (OutputCollector & output)
 	{
 		QString type = parser.value(*simulatedDeviceType);
@@ -228,6 +243,11 @@ private:
 		if (parser.isSet(*licenseOption)) mode = License;
 		else if (parser.isSet(*versionOption)) mode = Version;
 		else if (parser.isSet(*detectOption)) mode = Detect;
+		else if (parser.isSet(*infoOption))
+		{
+			mode = Info;
+			programPath = parser.value(*infoOption);
+		}
 		else if (parser.isSet(*programOption))
 		{
 			mode = Program;
@@ -245,6 +265,7 @@ private:
 	QCommandLineOption * silentOption;
 	QCommandLineOption * timeoutOption;
 	QCommandLineOption * headlessOption;
+	QCommandLineOption * infoOption;
 	OperationMode mode;
 	DeviceType device;
 	QString programPath;
@@ -277,7 +298,7 @@ void Application::setupApplicationConstants ()
 {
 	QCoreApplication::setApplicationName("monoprog");
 	QCoreApplication::setOrganizationName("Monolit ApS");
-	QCoreApplication::setApplicationVersion("0.9.2");
+	QCoreApplication::setApplicationVersion("0.9.3");
 }
 
 IDeviceCommunicator * Application::createDeviceCommunication () const
@@ -296,9 +317,6 @@ IDeviceCommunicator * Application::createDeviceCommunication () const
 			return new ResponsiveAppMockDevice(*output,MonoBoard);
 		case MockUnresponsiveApp:
 			return new UnresponsiveAppMockDevice(*output);
-		default:
-			throw "Unknown device";
-			return 0;
 	}
 }
 
@@ -312,13 +330,13 @@ StatusCode Application::run ()
 			return displayVersion();
 		case Detect:
 			return detectDevice();
+		case Info:
+			return displayInfo(arguments->getAppPath());
 		case Program:
 		 	return programDevice(arguments->getAppPath());
 		case Unknown:
 		case UnknownMockDevice:
 			arguments->getParser().showHelp(Usage);
-		default:
-			return UnknownError;
 	}
 }
 
@@ -360,6 +378,49 @@ bool Application::fileExists (QFileInfo const & file)
 	return true;
 }
 
+IProgressUpdater * Application::createProgressUpdater () const
+{
+	if (arguments->getHeadless())
+	{
+		return new HeadlessProgressUpdater(*output);
+	}
+	else
+	{
+		return new HumanProgressUpdater(*output);
+	}
+}
+
+StatusCode Application::displayInfo (QString const & appPath)
+{
+	QFileInfo file(appPath);
+	if (!fileExists(file)) return FileDoesNotExist;
+	// TODO: ATM using a null device, but ProgrammerBase should
+	// be detached from the actual program so we can get meta info from the
+	// program without having a device.
+	IProgrammer * programmer = ProgrammerFactory::createProgrammer(file,0,0,0);
+	if (!programmer)
+	{
+		output->error() << "Unknown program type: " << file.suffix().toStdString();
+		return ProgramTypeNotRecognised;
+	}
+	programmer->setOutput(output);
+	size_t flashBytes = programmer->getProgramSize();
+	if (flashBytes == 0)
+	{
+		output->error() << "File type not supported: " << file.suffix().toStdString();
+		return UnsupportedFileType;
+	}
+	if (arguments->getHeadless())
+	{
+		OUTPUT(0) << flashBytes;
+	}
+	else
+	{
+		OUTPUT(0) << "Flash bytes used: " << flashBytes;
+	}
+	return Success;
+}
+
 StatusCode Application::programDevice (QString const & appPath)
 {
 	QFileInfo file(appPath);
@@ -373,19 +434,28 @@ StatusCode Application::programDevice (QString const & appPath)
 			return CouldNotResetMono;
 		}
 	}
-	IProgrammer * programmer = ProgrammerFactory::createProgrammer(file,psocDevice.release(),arguments->getMsTimeout());
+	IProgressUpdater * updater = createProgressUpdater();
+	IProgrammer * programmer = ProgrammerFactory::createProgrammer
+	(
+		file,
+		psocDevice.release(),
+		updater,
+		arguments->getMsTimeout()
+	);
 	if (!programmer)
 	{
 		output->error() << "Unknown program type: " << file.suffix().toStdString();
 		return ProgramTypeNotRecognised;
 	}
+	programmer->setOutput(output);
+	size_t flashBytes = programmer->getProgramSize();
+	updater->setAppSize(flashBytes);
 	return programDeviceInBootloader(appPath,programmer);
 }
 
 StatusCode Application::programDeviceInBootloader (QString const & appPath, IProgrammer * programmer_)
 {
 	std::unique_ptr<IProgrammer> programmer(programmer_);
-	programmer->setOutput(output);
 	std::string const filePath = appPath.toStdString();
 	char const * path = filePath.c_str();
 	OUTPUT(1) << "Programming Mono device with " << path;

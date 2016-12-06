@@ -14,6 +14,7 @@ enum StatusCode
 	MissingElfSection = 6,
 	WrongSiliconId = 7,
 	CouldNotResetMono = 8,
+	UnsupportedFileType = 9,
 	UnknownError
 };
 
@@ -23,6 +24,7 @@ class OutputCollector;
 class QString;
 class QFileInfo;
 struct IDeviceCommunicator;
+struct IProgressUpdater;
 
 class Application
 {
@@ -34,10 +36,12 @@ private:
 	void setupOutput (std::ostream & out, std::ostream & error);
 	IDeviceCommunicator * createDeviceCommunication () const;
 	void setupApplicationConstants ();
+	IProgressUpdater * createProgressUpdater () const;
 	StatusCode displayVersion ();
 	StatusCode displayLicenses ();
 	StatusCode detectDevice ();
 	StatusCode programDevice (QString const & appPath);
+	StatusCode displayInfo (QString const & appPath);
 	StatusCode programDeviceInBootloader (QString const & appPath, IProgrammer * programmer);
 	bool fileExists (QFileInfo const & file);
 	QCoreApplication * qtApp;

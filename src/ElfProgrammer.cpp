@@ -76,8 +76,14 @@ struct ConfiguredFlashRow
 
 #define OUTPUT(level) OUTPUTCOLLECTOR_LINE((*output),level)
 
-ElfProgrammer::ElfProgrammer (QFileInfo & file, IDeviceCommunicator * device, uint32_t msTimeout)
-: ProgrammerBase(file,device,msTimeout)
+ElfProgrammer::ElfProgrammer
+(
+	QFileInfo & file,
+	IDeviceCommunicator * device,
+	IProgressUpdater * updater,
+	uint32_t msTimeout
+)
+: ProgrammerBase(file,device,updater,msTimeout)
 , bootloaderVersion(0)
 , bootloaderFound(false)
 {
@@ -88,8 +94,34 @@ ElfProgrammer::~ElfProgrammer ()
 	if (bootloaderFound) CyBtldr_SafeEndBootloadOperation();
 }
 
+size_t ElfProgrammer::getProgramSize ()
+{
+	ProgramStatus status = readProgram();
+	if (ProgrammerSuccess != status) return 0;
+	size_t rows = flashRowsToWrite();
+	return rows * 0x120;
+}
+
 ProgramStatus ElfProgrammer::program ()
 {
+	ProgramStatus status = readProgram();
+	if (ProgrammerSuccess != status) return status;
+	if (!code || !config || !metadata) return ProgrammerCorruptProgram;
+	std::ios::fmtflags flags(output->getFlags());
+	OUTPUT(2) << "Program: " << std::hex << code->address() << "-" << code->address()+code->size();
+	OUTPUT(2) << "Config: " << std::hex << config->address() << "-" << config->address()+config->size();
+	OUTPUT(2) << "Meta: " << std::hex << metadata->address() << "-" << metadata->address()+metadata->size();
+	output->setFlags(flags);
+	useInvertedSummationOfAllBytesChecksum();
+	status = startBootloader();
+	if (ProgrammerSuccess != status) return status;
+	if (! transferProgramToBooloader()) return ProgrammerFailed;
+	return ProgrammerSuccess;
+}
+
+ProgramStatus ElfProgrammer::readProgram ()
+{
+	checkSetup();
 	std::string const stringPath = file.filePath().toStdString();
 	char const * path = stringPath.c_str();
 	OUTPUT(5) << "ElfProgrammer " << path;
@@ -98,16 +130,6 @@ ProgramStatus ElfProgrammer::program ()
 	setupConfigMemory();
 	setupMetadataMemory();
 	setupSiliconId();
-	if (!code || !config || !metadata) return ProgrammerCorruptProgram;
-	std::ios::fmtflags flags(output->getFlags());
-	OUTPUT(2) << "Program: " << std::hex << code->address() << "-" << code->address()+code->size();
-	OUTPUT(2) << "Config: " << std::hex << config->address() << "-" << config->address()+config->size();
-	OUTPUT(2) << "Meta: " << std::hex << metadata->address() << "-" << metadata->address()+metadata->size();
-	output->setFlags(flags);
-	useInvertedSummationOfAllBytesChecksum();
-	ProgramStatus status = startBootloader();
-	if (ProgrammerSuccess != status) return status;
-	if (! transferProgramToBooloader()) return ProgrammerFailed;
 	return ProgrammerSuccess;
 }
 
@@ -245,7 +267,7 @@ void ElfProgrammer::setupConfigMemory ()
 
 void ElfProgrammer::setupMetadataMemory ()
 {
-	// For the loayout of the metadata section, see pages 20-22 of
+	// For the layout of the metadata section, see pages 20-22 of
 	// [Bootloader and bootloadable](http://www.cypress.com/file/140321/download).
 	size_t const METADATASIZE = 0x40;
 	uint8_t * buffer = new uint8_t[METADATASIZE];

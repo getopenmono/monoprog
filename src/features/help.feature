@@ -20,7 +20,7 @@ Feature: Application can display help and license
 
 	Scenario Outline: Version argument
 		When I run `monoprog <arg>`
-		Then the output should contain "monoprog 0.9.2"
+		Then the output should contain "monoprog 0.9.3"
 		And the exit status should be 0
 
 		Examples:

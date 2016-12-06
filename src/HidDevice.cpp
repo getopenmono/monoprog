@@ -85,12 +85,6 @@ int HidDevice::readData (uint8_t * buffer, int bytesToRead)
 	else return -1;
 }
 
-void HidDevice::progressUpdate (uint8_t arrayId, int unsigned short rowNr)
-{
-	OUTPUT(3) << "Completed array '" << (int) arrayId << "' row " << rowNr;
-	PROGRESS(1);
-}
-
 HidDeviceStatus HidDevice::connectRealDev (uint32_t msTimeout)
 {
 	OUTPUT(2) << "Looking for Mono as a USB device.";

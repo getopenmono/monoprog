@@ -1,6 +1,7 @@
 #include "ProgrammerBase.h"
 #include "IDeviceCommunicator.h"
 #include "OutputCollector.h"
+#include "IProgressUpdater.h"
 
 namespace {
 
@@ -10,6 +11,7 @@ namespace {
  * the open USB device and the output collector.
  */
 IDeviceCommunicator * psocDevice;
+IProgressUpdater * psocUpdater;
 uint32_t msTimeout;
 extern "C" int openConnection ()
 {
@@ -29,16 +31,24 @@ extern "C" int writeData (char unsigned * buffer, int length)
 }
 extern "C" void progressUpdate (char unsigned arrayId, int unsigned short rowNr)
 {
-	psocDevice->progressUpdate(arrayId,rowNr);
+	psocUpdater->progressUpdate(arrayId,rowNr);
 }
 
 } // namespace {
 
-ProgrammerBase::ProgrammerBase (QFileInfo & fileInfo, IDeviceCommunicator * device_, uint32_t ms)
+ProgrammerBase::ProgrammerBase
+(
+	QFileInfo & fileInfo,
+	IDeviceCommunicator * device_,
+	IProgressUpdater * updater_,
+	uint32_t ms
+)
 : file(fileInfo)
 , device(device_)
+, updater(updater_)
 {
 	psocDevice = device.get();
+	psocUpdater = updater.get();
 	msTimeout = ms;
 }
 
@@ -61,4 +71,9 @@ CyBtldr_CommunicationsData ProgrammerBase::getCybtldrCommPack () const
 CyBtldr_ProgressUpdate * ProgrammerBase::getCybtldrProgressUpdate () const
 {
 	return progressUpdate;
+}
+
+void ProgrammerBase::checkSetup () const
+{
+	if (!output) throw std::logic_error("Programmer has no output attached");
 }
