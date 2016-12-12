@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/getopenmono/monoprog.svg)](https://travis-ci.org/getopenmono/monoprog)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/getopenmono/monoprog?branch=master&svg=true "AppVeyor Build Status")](https://ci.appveyor.com/project/stoffera/monoprog)
 
 # Mono device programmer
 
