@@ -19,7 +19,7 @@
 
 #define OUTPUT(level) OUTPUTCOLLECTOR_LINE((*output),level)
 
-namespace {
+namespace monolit {
 
 enum OperationMode
 {
@@ -78,11 +78,11 @@ public:
 		delete simulatedDeviceType;
 		delete detectOption;
 	}
-	OperationMode getOperationMode () const
+	monolit::OperationMode getOperationMode () const
 	{
 		return mode;
 	}
-	DeviceType getDevice () const
+	monolit::DeviceType getDevice () const
 	{
 		return device;
 	}
@@ -217,16 +217,16 @@ private:
 	void decideDeviceType (OutputCollector & output)
 	{
 		QString type = parser.value(*simulatedDeviceType);
-		if (type.size() == 0) device = RealDevice;
-		else if (type == deviceType.at(0)) device = MockNotConnected;
-		else if (type == deviceType.at(1)) device = MockDevBoard;
-		else if (type == deviceType.at(2)) device = MockMonoBoard;
-		else if (type == deviceType.at(3)) device = MockResponsiveApp;
-		else if (type == deviceType.at(4)) device = MockUnresponsiveApp;
+		if (type.size() == 0) device = monolit::RealDevice;
+		else if (type == deviceType.at(0)) device = monolit::MockNotConnected;
+		else if (type == deviceType.at(1)) device = monolit::MockDevBoard;
+		else if (type == deviceType.at(2)) device = monolit::MockMonoBoard;
+		else if (type == deviceType.at(3)) device = monolit::MockResponsiveApp;
+		else if (type == deviceType.at(4)) device = monolit::MockUnresponsiveApp;
 		else
 		{
-			device = MockNotConnected;
-			mode = UnknownMockDevice;
+			device = monolit::MockNotConnected;
+			mode = monolit::UnknownMockDevice;
 			output.error() << "Unknown mock device type requested: "
 				<< type.toStdString();
 			QString mock;
@@ -240,20 +240,20 @@ private:
 	}
 	void decideOperationModeFromArguments ()
 	{
-		if (parser.isSet(*licenseOption)) mode = License;
-		else if (parser.isSet(*versionOption)) mode = Version;
-		else if (parser.isSet(*detectOption)) mode = Detect;
+		if (parser.isSet(*licenseOption)) mode = monolit::License;
+		else if (parser.isSet(*versionOption)) mode = monolit::Version;
+		else if (parser.isSet(*detectOption)) mode = monolit::Detect;
 		else if (parser.isSet(*infoOption))
 		{
-			mode = Info;
+			mode = monolit::Info;
 			programPath = parser.value(*infoOption);
 		}
 		else if (parser.isSet(*programOption))
 		{
-			mode = Program;
+			mode = monolit::Program;
 			programPath = parser.value(*programOption);
 		}
-		else mode = Unknown;
+		else mode = monolit::Unknown;
 	}
 	QCommandLineParser parser;
 	QCommandLineOption * versionOption;
@@ -266,8 +266,8 @@ private:
 	QCommandLineOption * timeoutOption;
 	QCommandLineOption * headlessOption;
 	QCommandLineOption * infoOption;
-	OperationMode mode;
-	DeviceType device;
+	monolit::OperationMode mode;
+	monolit::DeviceType device;
 	QString programPath;
 };
 
@@ -305,17 +305,17 @@ IDeviceCommunicator * Application::createDeviceCommunication () const
 {
 	switch (arguments->getDevice())
 	{
-		case RealDevice:
+		case monolit::RealDevice:
 			return new HidDevice(*output);
-		case MockNotConnected:
+		case monolit::MockNotConnected:
 			return new NotConnectedMockDevice(*output);
-		case MockDevBoard:
-			return new InBootloaderMockDevice(*output,DevBoard);
-		case MockMonoBoard:
-			return new InBootloaderMockDevice(*output,MonoBoard);
-		case MockResponsiveApp:
-			return new ResponsiveAppMockDevice(*output,MonoBoard);
-		case MockUnresponsiveApp:
+		case monolit::MockDevBoard:
+			return new InBootloaderMockDevice(*output,monolit::DevBoard);
+		case monolit::MockMonoBoard:
+			return new InBootloaderMockDevice(*output,monolit::MonoBoard);
+		case monolit::MockResponsiveApp:
+			return new ResponsiveAppMockDevice(*output,monolit::MonoBoard);
+		case monolit::MockUnresponsiveApp:
 			return new UnresponsiveAppMockDevice(*output);
 	}
 }
@@ -324,18 +324,18 @@ StatusCode Application::run ()
 {
 	switch (arguments->getOperationMode())
 	{
-		case License:
+		case monolit::License:
 			return displayLicenses();
-		case Version:
+		case monolit::Version:
 			return displayVersion();
-		case Detect:
+		case monolit::Detect:
 			return detectDevice();
-		case Info:
+		case monolit::Info:
 			return displayInfo(arguments->getAppPath());
-		case Program:
+		case monolit::Program:
 		 	return programDevice(arguments->getAppPath());
-		case Unknown:
-		case UnknownMockDevice:
+		case monolit::Unknown:
+		case monolit::UnknownMockDevice:
 			arguments->getParser().showHelp(Usage);
 	}
 }
